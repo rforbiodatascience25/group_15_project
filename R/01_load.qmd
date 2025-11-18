@@ -12,11 +12,13 @@ execute:
 
 ### Load the data
 
+Checking if the data folder is there and if not, creates it and writes the loaded data file.
+
 ```{r}
 library(tidyverse)
 
 
-data_dir <- "data"
+data_dir <- "../data"
 
 if( !dir.exists(data_dir) ){
   dir.create(path = data_dir)
