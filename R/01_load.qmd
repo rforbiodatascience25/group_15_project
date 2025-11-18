@@ -18,7 +18,7 @@ library(tidyverse)
 
 data_dir <- "data"
 
-if( !dir.exists(data) ){
+if( !dir.exists(data_dir) ){
   dir.create(path = data_dir)
 }
 
