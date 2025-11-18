@@ -2,3 +2,47 @@
 title: "02_clean"
 format: html
 ---
+
+Load the Dataset
+
+```{r}
+library(tidyverse)
+
+kidney_raw <- read_csv("../data/01_data_load.csv")
+
+```
+
+Changing the column names
+
+```{r}
+kidney_clean <- kidney_raw %>%
+  rename(
+    id = id,
+    age = age,
+    blood_pressure = bp,
+    specific_gravity = sg,
+    albumin = al,
+    sugar = su,
+    red_blood_cells = rbc,
+    pus_cells = pc,
+    pus_cell_clumps = pcc,
+    bacteria = ba,
+    blood_glucose_random = bgr,
+    blood_urea = bu,
+    serum_creatinine = sc,
+    sodium = sod,
+    potassium = pot,
+    hemoglobin = hemo,
+    packed_cell_volume = pcv,
+    white_blood_cell_count = wc,
+    red_blood_cell_count = rc,
+    hypertension = htn,
+    diabetes_mellitus = dm,
+    coronary_artery_disease = cad,
+    appetite = appet,
+    pedal_edema = pe,
+    anemia = ane,
+    classification = classification
+  )
+write_csv(kidney_clean, "../data/02_dat_clean.csv")
+```
