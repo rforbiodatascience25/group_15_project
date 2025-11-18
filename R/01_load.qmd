@@ -3,3 +3,13 @@ title: "01_load"
 format: html
 editor: visual
 ---
+
+```{r}
+library(tidyverse)
+
+zip_file <- "_raw/kidney_disease.zip"
+unzip(zip_file, exdir = "data")
+
+kidney_disease <- read_csv("../data/kidney_disease.csv")
+view(kidney_disease)
+```
