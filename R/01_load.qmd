@@ -15,6 +15,14 @@ execute:
 ```{r}
 library(tidyverse)
 
+
+data_dir <- "data"
+
+if( !dir.exists(data) ){
+  dir.create(path = data_dir)
+}
+
+
 kidney_disease <- "../_raw/kidney_disease.csv" |> 
   read_csv() |>
   write_csv("../data/01_data_load.csv")
