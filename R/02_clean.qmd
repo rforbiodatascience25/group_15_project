@@ -46,3 +46,25 @@ kidney_clean <- kidney_raw %>%
   )
 write_tsv(kidney_clean, "../data/02_dat_clean.tsv")
 ```
+
+Changing values to 0s and 1s
+
+```{r}
+library(dplyr)
+
+kidney_clean_binary <- kidney_clean %>%
+  mutate(
+    red_blood_cells = as.numeric(red_blood_cells == "normal"),
+    pus_cells = as.numeric(pus_cells == "normal"),
+    pus_cell_clumps = as.numeric(pus_cell_clumps == "present"),
+    bacteria = as.numeric(bacteria == "present"),
+    hypertension = as.numeric(hypertension == "no"),
+    diabetes_mellitus = as.numeric(diabetes_mellitus == "no"),
+    coronary_artery_disease = as.numeric(coronary_artery_disease == "no"),
+    appetite = as.numeric(appetite == "yes"),
+    pedal_edema = as.numeric(pedal_edema == "no"),
+    anemia = as.numeric(anemia == "no")
+  )
+
+write_tsv(kidney_clean_binary, "../data/02_dat_clean_binary.tsv")
+```
