@@ -10,10 +10,9 @@ editor: visual
 library(tidyverse)
 
 # unzip the file to data folder
-zip_file <- "_raw/kidney_disease.zip"
-unzip(zip_file, exdir = "data")
+zip_file <- "../_raw/kidney_disease.zip"
+unzip(zip_file, exdir = "../data")
 
 # read cvs
 kidney_disease <- read_csv("../data/kidney_disease.csv")
-view(kidney_disease)
 ```
