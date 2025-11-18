@@ -17,7 +17,6 @@ library(tidyverse)
 
 kidney_disease <- "../_raw/kidney_disease.zip" |> 
   unzip() |>
-  read_csv()
-
-write_tsv(kidney_disease, "../data/01_data_load.tsv")
+  read_csv() |>
+  write_csv("../data/01_data_load.csv")
 ```
