@@ -44,5 +44,5 @@ kidney_clean <- kidney_raw %>%
     anemia = ane,
     classification = classification
   )
-write_tsv(kidney_clean, "../data/02_dat_clean.tsv")
+write_tsv(kidney_clean, "../data/02_dat_clean.csv")
 ```
