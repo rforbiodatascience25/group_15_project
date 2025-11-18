@@ -63,6 +63,8 @@ kidney_clean <- kidney_clean %>%
 
 
 ```
+<<<<<<< HEAD
+=======
 
 ### NA's
 
@@ -81,3 +83,4 @@ view(nas)
 # write a clean data
 write_csv(kidney_clean, "../data/02_dat_clean.csv")
 ```
+>>>>>>> aab313cda5fee105c4f2b35e6927ab04b920925c
