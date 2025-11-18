@@ -15,10 +15,9 @@ execute:
 ```{r}
 library(tidyverse)
 
-# unzip the file to data folder
-zip_file <- "../_raw/kidney_disease.zip"
-unzip(zip_file, exdir = "../data")
+kidney_disease <- "../_raw/kidney_disease.zip" |> 
+  unzip() |>
+  read_csv()
 
-# read cvs
-kidney_disease <- read_csv("../data/kidney_disease.csv")
+write_tsv(kidney_disease, "../data/01_data_load.tsv")
 ```
