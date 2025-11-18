@@ -3,7 +3,7 @@ title: "02_clean"
 format: html
 ---
 
-Load the Dataset
+### Load the Dataset
 
 ```{r}
 library(tidyverse)
@@ -12,7 +12,7 @@ kidney_raw <- read_csv("../data/01_data_load.csv")
 
 ```
 
-Changing the column names
+### Changing the column names
 
 ```{r}
 kidney_clean <- kidney_raw %>%
@@ -44,11 +44,15 @@ kidney_clean <- kidney_raw %>%
     anemia = ane,
     classification = classification
   )
-write_csv(kidney_clean, "../data/02_dat_clean.csv")
+
 ```
 
+### Column types fixed
+
+In the raw data, some columns with numeric observations were classified as characters; these are changed into the numeric type.
+
 ```{r}
-# change the char columns to numeric if they are numbers or factor if they are string
+# if colums are numbrs - change to numeric, if characters - change to factor
 kidney_clean <- kidney_clean %>%
   mutate(
     packed_cell_volume = as.numeric(packed_cell_volume),
@@ -59,3 +63,24 @@ kidney_clean <- kidney_clean %>%
 
 
 ```
+<<<<<<< HEAD
+=======
+
+### NA's
+
+The missing values are going to be handled in separate analysis individually. The percentage of NAs in each column is summarized here:
+
+```{r}
+nas<-kidney_clean %>% 
+     summarise(across(everything(), ~mean(is.na(.)) * 100))
+
+view(nas)
+```
+
+### Save clean data in a new file
+
+```{r}
+# write a clean data
+write_csv(kidney_clean, "../data/02_dat_clean.csv")
+```
+>>>>>>> aab313cda5fee105c4f2b35e6927ab04b920925c
