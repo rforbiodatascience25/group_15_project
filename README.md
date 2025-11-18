@@ -12,7 +12,7 @@ This is the final project for the course "R for bio data science" at DTU, autumn
 
 -   Humaira Amin (s235423)
 
--   Anas Majed El-Youssef(s233381)
+-   Anas Majed El-Youssef (s233381)
 
 ## Data and aim
 
