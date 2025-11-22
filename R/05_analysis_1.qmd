@@ -3,3 +3,8 @@ title: "05_analysis_1"
 format: html
 ---
 
+# Content ideas
+
+-   analyze fraction people with kidney disease by age. I.e., is kidney disease more common in older age?
+
+-   Regression: find variables which might explain kidney disease, or be correlated

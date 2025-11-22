@@ -11,6 +11,10 @@ format: html
 
 -   Create age groups
 
+# Data augmentation
+
+Here, we modify the cleaned dataset to prepare it for analysis. As a first step, we simply categorize the ages into age groups by intervals of 10, and re-order the data such that the new `age_group` column is after `age` for improved structure.
+
 ```{r create_age_groups}
 kidney_augmented <- kidney_clean |> 
   mutate(age_group = case_when(age <= 10 ~ "0-10",
@@ -27,3 +31,16 @@ kidney_augmented <- kidney_clean |>
            .after = age)
 ```
 
+Next, we split the dataset into two dataframes:
+
+-   One with only the diagnoses (`hypertension`, `coronary_artery_disease`, `anemia`, and `classification)`
+
+-   One with the remaining vitals and age information.
+
+```{r split_data}
+diagnoses = c("hypertension",
+              "coronary_artery_disease",
+              "anemia",
+              "classification")
+
+```
