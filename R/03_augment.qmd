@@ -33,9 +33,6 @@ kidney_augmented <- kidney_clean |>
                                age > 90 & age <= 100 ~ "91-100")) |> 
   relocate(age_group,
            .after = age)
-
-write_csv(kidney_augmented, 
-          "../data/03_kidney_augmented.csv")
 ```
 
 Next, we split the dataset into two dataframes:
@@ -53,11 +50,36 @@ diagnoses = c("hypertension",
 kidney_diagnoses <- kidney_augmented |> 
   select(id,
          diagnoses)
-write_csv(kidney_diagnoses, "../data/04_kidney_diagnoses.csv")
+
+write_csv(kidney_diagnoses,
+          "../data/04_kidney_diagnoses.csv")
 
 kidney_vitals <- kidney_augmented |> 
   select(!diagnoses)
-write_csv(kidney_vitals, "../data/05_kidney_vitals.csv")
 
+write_csv(kidney_vitals,
+          "../data/05_kidney_vitals.csv")
+```
 
+If we want, these data can be joined again. `id` can be used as an identifier which we can merge the data by. We can do this with either `inner_join` or `full_join`, the results will be the same as we know that everything in each dataframe have matching keys since they share origin.
+
+```{r merge_data}
+kidney_merged <- full_join(kidney_vitals,
+                           kidney_diagnoses, 
+                           by = "id")
+```
+
+As a sanity check, we can make sure that the dimensions of the merged dataframe is the same as `kidney_augmented`.
+
+```{r sanity_check}
+merged_dims <- kidney_merged |> 
+  dim()
+
+augmented_dims <- kidney_augmented |> 
+  dim()
+
+if (merged_dims[1] != augmented_dims[1] |
+    merged_dims[2] != augmented_dims[2]) {
+  warning("Dataframe dimensions not matching")
+} 
 ```
