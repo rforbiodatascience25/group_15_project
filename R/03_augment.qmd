@@ -13,6 +13,10 @@ format: html
 
 # Data augmentation
 
+```{r load_packages}
+library(dplyr)
+```
+
 Here, we modify the cleaned dataset to prepare it for analysis. As a first step, we simply categorize the ages into age groups by intervals of 10, and re-order the data such that the new `age_group` column is after `age` for improved structure.
 
 ```{r create_age_groups}
@@ -29,6 +33,9 @@ kidney_augmented <- kidney_clean |>
                                age > 90 & age <= 100 ~ "91-100")) |> 
   relocate(age_group,
            .after = age)
+
+write_csv(kidney_augmented, 
+          "../data/03_kidney_augmented.csv")
 ```
 
 Next, we split the dataset into two dataframes:
@@ -42,5 +49,15 @@ diagnoses = c("hypertension",
               "coronary_artery_disease",
               "anemia",
               "classification")
+
+kidney_diagnoses <- kidney_augmented |> 
+  select(id,
+         diagnoses)
+write_csv(kidney_diagnoses, "../data/04_kidney_diagnoses.csv")
+
+kidney_vitals <- kidney_augmented |> 
+  select(!diagnoses)
+write_csv(kidney_vitals, "../data/05_kidney_vitals.csv")
+
 
 ```
