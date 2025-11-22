@@ -92,7 +92,7 @@ write_csv(kidney_merged,
           "../data/06_kidney_merged.csv")
 ```
 
-## Glomerular Filtration Rate (GFR)
+## Glomerular Filtration Rate (GFR) estimation
 
 With the data, we can estimate the [glomerular filtration rate (GFR)](https://www.ncbi.nlm.nih.gov/books/NBK500032/), which is a measurement of how well kidneys filter waste from blood by estimating the amount of blood that pass through glomeruli of the kidneys. Using this, we can categorize the stage of kidney failure by these stages:
 
@@ -122,12 +122,12 @@ Where:
 
 -   α = -0.241 (female) or -0.302 (male)
 
-However, because we lack sex data, estimates for both the male and female GFR will be calculated, and the average reported. This is not a medically sound way, and we are aware that the estimates are likely to be wrong. However, for our purposes, it suffices.
+However, because we lack sex data, estimates for both the male and female GFR will be calculated and the average reported. This is not a medically sound approach, and we are aware that the estimates are likely to be inaccurate. However, for our purposes, it suffices.
 
 ```{r estimate_GFR}
 calculate_GFR <- function(dataframe) {
    dataframe |> 
-    mutate(
+    mutate( #pmax/pmin instead of max/min in order to iterate over each creatinine value
       GFR_male = 142 * pmin(serum_creatinine / 0.9, 1)**(-0.302) 
       * pmax(serum_creatinine / 0.9, 1) ** (-1.2) * (0.9938**age)
       ) |> 
@@ -163,7 +163,7 @@ write_csv(kidney_merged_GFR,
 
 ```
 
-As a quick sanity check, we can observe the chronic kidney disease stages `cdk_stage` in individuals who do not have chronic kidney disease (`notcdk`), as it stands to reason that these would not be in advanced stages.
+As a quick sanity check, we can observe the chronic kidney disease stages `cdk_stage` in individuals who do not have chronic kidney disease `notcdk`, as it stands to reason that these would not be in advanced stages.
 
 ```{r CKD_stages_sanity_check}
 kidney_merged_GFR |> 
@@ -172,4 +172,4 @@ kidney_merged_GFR |>
 
 ```
 
-We see that most fall within stage 1 (normal) or stage 2 (mild). This confirms that our estimation is reasonable, and we can speculate that the relatively large number of individuals that fall within the mild to moderate category might be overestimated due to the lack of sex data.
+We see that most fall within stage 1 (normal) or stage 2 (mild). This confirms that our estimation is reasonable, and we can speculate that the relatively large number of individuals that fall within the mild to moderate category might be overestimated due to the use of GFR average.
