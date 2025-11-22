@@ -158,6 +158,9 @@ kidney_merged_GFR <- kidney_merged_GFR |>
     )
   )
 
+write_csv(kidney_merged_GFR,
+          "../data/kidney_merged_GFR.csv")
+
 ```
 
 As a quick sanity check, we can observe the chronic kidney disease stages `cdk_stage` in individuals who do not have chronic kidney disease (`notcdk`), as it stands to reason that these would not be in advanced stages.
