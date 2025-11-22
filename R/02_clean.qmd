@@ -10,10 +10,12 @@ execute:
   warning: false
 ---
 
-### Load the Dataset
+### Loading the Dataset
 
-```{r load_libraries}
+```{r}
 library(tidyverse)
+
+kidney_disease <- read.csv("../data/01_data_load.csv")
 ```
 
 ### Changing the column names
@@ -78,5 +80,5 @@ view(nas)
 ### Save clean data in a new file
 
 ```{r}
-write_csv(kidney_clean, "../data/02_dat_clean.csv")
+write_csv(kidney_clean, "../data/02_data_clean.csv")
 ```
