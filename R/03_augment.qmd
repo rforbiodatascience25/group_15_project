@@ -3,7 +3,9 @@ title: "03_augment"
 format: html
 ---
 
-### Content ideas - enhanced dataset
+# Data augmentation
+
+## Content ideas - enhanced dataset
 
 -   If needed and relevant, categorize blood pressure into low, normal, high, very high
 
@@ -11,7 +13,7 @@ format: html
 
 -   Create age groups
 
-# Data augmentation
+## Create categories
 
 ```{r load_packages}
 library(dplyr)
@@ -35,9 +37,11 @@ kidney_augmented <- kidney_clean |>
            .after = age)
 ```
 
+## Split and join
+
 Next, we split the dataset into two dataframes:
 
--   One with only the diagnoses (`hypertension`, `coronary_artery_disease`, `anemia`, and `classification)`
+-   One with only the diagnoses (`hypertension`, `coronary_artery_disease`, `anemia`, `pedal_edema,` and `classification)`
 
 -   One with the remaining vitals and age information.
 
@@ -45,6 +49,7 @@ Next, we split the dataset into two dataframes:
 diagnoses = c("hypertension",
               "coronary_artery_disease",
               "anemia",
+              "pedal_edema",
               "classification")
 
 kidney_diagnoses <- kidney_augmented |> 
@@ -82,4 +87,52 @@ if (merged_dims[1] != augmented_dims[1] |
     merged_dims[2] != augmented_dims[2]) {
   warning("Dataframe dimensions not matching")
 } 
+
+write_csv(kidney_merged,
+          "../data/06_kidney_merged.csv")
+```
+
+## Glomerular Filtration Rate (GFR)
+
+With the data, we can estimate the [glomerular filtration rate (GFR)](https://www.ncbi.nlm.nih.gov/books/NBK500032/), which is a measurement of how well kidneys filter waste from blood by estimating the amount of blood that pass through glomeruli of the kidneys. Using this, we can categorize the stage of kidney failure by these stages:
+
+-   **Stage 1, normal**: \>90 ml per minute
+
+-   **Stage 2, mild**: 60-89 ml per minute
+
+-   **Stage 3a, mild to moderate**: 45-59 ml per minute
+
+-   **Stage 3b, moderate to severe**: 30-44 ml per minute
+
+-   **Stage 4, severe**: 15-29 ml per minute
+
+-   **Stage 5, failure**: \<15 ml per minute
+
+Estimation of GFR is achieved by the [CDK-EPI equation](#0):
+
+$$
+\text{eGFR}_{\text{cr}} = 142 \times \min\left(\frac{\text{Scr}}{\kappa},\, 1\right)^{\alpha}\times \max\left(\frac{\text{Scr}}{\kappa},\, 1\right)^{-1.200}\times 0.9938^{\text{Age}}\times 1.012 \;\; \text{[if female]}
+$$
+
+Where:
+
+-   S~cr~ = standardized serum creatinine in mg/dL
+
+-   κ = 0.7 (females) or 0.9 (males)
+
+-   α = -0.241 (female) or -0.302 (male)
+
+However, because we lack sex data, estimates for both the male and female GFR will be calculated.
+
+```{r estimate_GFR}
+
+calculate_GFR_male <- function(dataframe) {
+  dataframe |> 
+    mutate(
+      GFR_male = 142 * pmin(serum_creatinine / 0.9, 1)**(-0.302) * pmax(serum_creatinine / 0.9, 1) ** (-1.2) * (0.9938**age)
+      )
+}
+  
+test <- calculate_GFR_male(kidney_merged)
+
 ```
