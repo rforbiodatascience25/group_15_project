@@ -22,7 +22,7 @@ kidney_clean <- read_csv("../data/02_data_clean.csv")
 
 -   If needed and relevant, categorize blood pressure into low, normal, high, very high
 
--   summary staticstics to begin the analysis
+-   summary statistics to begin the analysis
 
 -   Create age groups
 

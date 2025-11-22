@@ -72,8 +72,8 @@ kidney_clean <- kidney_renamed %>%
 The missing values are going to be handled in separate analysis individually. The percentage of NAs in each column is summarized here:
 
 ```{r}
-nas <- kidney_clean %>% 
-     summarise(across(everything(), ~ mean(is.na(.)) * 100))
+nas<-kidney_clean %>% 
+     summarise(across(everything(), ~mean(is.na(.)) * 100))
 view(nas)
 ```
 
