@@ -3,8 +3,27 @@ title: "03_augment"
 format: html
 ---
 
-### Content ideas -  enhanced dataset
+### Content ideas - enhanced dataset
 
--   add age groups
+-   If needed and relevant, categorize blood pressure into low, normal, high, very high
 
 -   summary staticstics to begin the analysis
+
+-   Create age groups
+
+```{r create_age_groups}
+kidney_augmented <- kidney_clean |> 
+  mutate(age_group = case_when(age <= 10 ~ "0-10",
+                               age > 10 & age <= 20 ~ "11-20",
+                               age > 20 & age <= 30 ~ "21-30",
+                               age > 30 & age <= 40 ~ "31-40",
+                               age > 40 & age <= 50 ~ "41-50",
+                               age > 50 & age <= 60 ~ "51-60",
+                               age > 60 & age <= 70 ~ "61-70",
+                               age > 70 & age <= 80 ~ "71-80",
+                               age > 80 & age <= 90 ~ "81-90",
+                               age > 90 & age <= 100 ~ "91-100")) |> 
+  relocate(age_group,
+           .after = age)
+```
+
