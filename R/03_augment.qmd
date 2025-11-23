@@ -1,6 +1,13 @@
 ---
 title: "03_augment"
-format: html
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
 
 # Data augmentation
@@ -17,6 +24,13 @@ format: html
 
 ```{r load_packages}
 library(dplyr)
+library(tidyverse)
+```
+
+## Loading clean data
+
+```{r}
+kidney_clean <- read_csv("../data/02_data_clean.csv")
 ```
 
 Here, we modify the cleaned dataset to prepare it for analysis. As a first step, we simply categorize the ages into age groups by intervals of 10, and re-order the data such that the new `age_group` column is after `age` for improved structure.
@@ -24,14 +38,14 @@ Here, we modify the cleaned dataset to prepare it for analysis. As a first step,
 ```{r create_age_groups}
 kidney_augmented <- kidney_clean |> 
   mutate(age_group = case_when(age <= 10 ~ "0-10",
-                               age > 10 & age <= 20 ~ "11-20",
-                               age > 20 & age <= 30 ~ "21-30",
-                               age > 30 & age <= 40 ~ "31-40",
-                               age > 40 & age <= 50 ~ "41-50",
-                               age > 50 & age <= 60 ~ "51-60",
-                               age > 60 & age <= 70 ~ "61-70",
-                               age > 70 & age <= 80 ~ "71-80",
-                               age > 80 & age <= 90 ~ "81-90",
+                               age > 10 & age <= 20  ~ "11-20",
+                               age > 20 & age <= 30  ~ "21-30",
+                               age > 30 & age <= 40  ~ "31-40",
+                               age > 40 & age <= 50  ~ "41-50",
+                               age > 50 & age <= 60  ~ "51-60",
+                               age > 60 & age <= 70  ~ "61-70",
+                               age > 70 & age <= 80  ~ "71-80",
+                               age > 80 & age <= 90  ~ "81-90",
                                age > 90 & age <= 100 ~ "91-100")) |> 
   relocate(age_group,
            .after = age)
@@ -56,14 +70,8 @@ kidney_diagnoses <- kidney_augmented |>
   select(id,
          diagnoses)
 
-write_csv(kidney_diagnoses,
-          "../data/04_kidney_diagnoses.csv")
-
 kidney_vitals <- kidney_augmented |> 
   select(!diagnoses)
-
-write_csv(kidney_vitals,
-          "../data/05_kidney_vitals.csv")
 ```
 
 If we want, these data can be joined again. `id` can be used as an identifier which we can merge the data by. We can do this with either `inner_join` or `full_join`, the results will be the same as we know that everything in each dataframe have matching keys since they share origin.
@@ -86,10 +94,7 @@ augmented_dims <- kidney_augmented |>
 if (merged_dims[1] != augmented_dims[1] |
     merged_dims[2] != augmented_dims[2]) {
   warning("Dataframe dimensions not matching")
-} 
-
-write_csv(kidney_merged,
-          "../data/06_kidney_merged.csv")
+}
 ```
 
 ## Glomerular Filtration Rate (GFR) estimation
@@ -139,7 +144,7 @@ calculate_GFR <- function(dataframe) {
        GFR_average = (GFR_female + GFR_male) / 2
        )
 }
-  
+
 kidney_merged_GFR <- calculate_GFR(kidney_merged)
 ```
 
@@ -157,10 +162,6 @@ kidney_merged_GFR <- kidney_merged_GFR |>
       GFR_average < 15 ~ "stage_5"
     )
   )
-
-write_csv(kidney_merged_GFR,
-          "../data/07_kidney_merged_GFR.csv")
-
 ```
 
 As a quick sanity check, we can observe the chronic kidney disease stages `cdk_stage` in individuals who do not have chronic kidney disease `notcdk`, as it stands to reason that these would not be in advanced stages.
@@ -168,8 +169,14 @@ As a quick sanity check, we can observe the chronic kidney disease stages `cdk_s
 ```{r CKD_stages_sanity_check}
 kidney_merged_GFR |> 
   filter(classification == "notckd") |> 
-  count("cdk_stage") 
-
+  count("cdk_stage")
 ```
 
 We see that most fall within stage 1 (normal) or stage 2 (mild). This confirms that our estimation is reasonable, and we can speculate that the relatively large number of individuals that fall within the mild to moderate category might be overestimated due to the use of GFR average.
+
+## Saving augmented data
+
+```{r}
+write_csv(kidney_merged_GFR,
+          "../data/03_data_augmented.csv")
+```
