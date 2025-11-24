@@ -59,7 +59,7 @@ summary(kidney_renamed)
 
 ## Fixing column types
 
-In the raw data, some columns with numeric observations were classified as characters; these are changed into the numeric type.
+In the raw data, some columns with numeric observations were classified as characters; these are changed into the numeric type. The characters are changed to factors for future manipulation.
 
 ```{r}
 kidney_clean <- kidney_renamed %>%
@@ -69,16 +69,6 @@ kidney_clean <- kidney_renamed %>%
     red_blood_cell_count = as.numeric(red_blood_cell_count),
     across(where(is.character), as.factor)
   )
-```
-
-## Treating NA values
-
-The missing values are going to be handled in separate analysis individually. The percentage of NAs in each column is summarized here:
-
-```{r}
-nas<-kidney_clean %>% 
-     summarise(across(everything(), ~mean(is.na(.)) * 100))
-view(nas)
 ```
 
 ## Save clean data in a new file
