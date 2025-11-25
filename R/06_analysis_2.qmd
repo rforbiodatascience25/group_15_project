@@ -1,9 +1,20 @@
 ---
 title: "06_analysis_2"
-format: html
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
 
 ## Giosuè
+
+## Correlation plot
+
+The corr plot shows the correlation between all the numeric variables in the dataset, from there we can inspect if there is correlation between variables and how strong.
 
 ```{r}
 library("PerformanceAnalytics")
@@ -11,23 +22,51 @@ library("PerformanceAnalytics")
 kidney_augmented <- read_rds("../data/03_data_augment.rds")
 
 kidney_augmented |>
-  select(age, blood_pressure, specific_gravity, albumin, blood_glucose_random, blood_urea, serum_creatinine, sodium, potassium, hemoglobin, packed_cell_volume, white_blood_cell_count, red_blood_cell_count) |>
+  select(age, blood_pressure, blood_glucose_random, blood_urea, serum_creatinine, sodium, potassium, hemoglobin, packed_cell_volume, white_blood_cell_count, red_blood_cell_count, GFR_male, GFR_female, GFR_average) |>
   chart.Correlation(histogram = TRUE, pch = 19)
 ```
+
+## Random forest analysis
+
+Using random forest we are inspecting the variable importance, to further select our variables. This also includes factor variables.
 
 ```{r}
 library(randomForest)
 library(caret)
 
-idx <- kidney_augmented$classification |>
-  createDataPartition(p = 0.7, list = F)
+kidney_augmented <- read_rds("../data/03_data_augment.rds")
 
-train <- kidney_augmented[idx,]
-test <- kidney_augmented[-idx,]
+data <- kidney_augmented |> 
+  na.omit() |>
+  select(-c(GFR_female, GFR_male, GFR_average))
 
-summary(train)
+idx <- data$classification |>
+  createDataPartition(p = 0.6, list = F)
+
+train <- data[idx,]
+test <- data[-idx,]
+
 rf <- train |> 
-  randomForest()
+  randomForest(classification ~ ., data = _, importance = T, ntree = 600)
+
+plot(rf$err.rate[,1], type='l')
+```
+
+### Visualizing the confusion matrix
+
+This is used to see the model performance on the test set.
+
+```{r}
+pred <- predict(rf,test)
+confusionMatrix(pred,test$classification)
+```
+
+### Variables importance plot
+
+This plot is used to see how much each variable is influencing the accuracy of the model.
+
+```{r}
+varImpPlot(rf)
 ```
 
 ## Joel
