@@ -33,8 +33,8 @@ for (pkg in packages) {
 ## Loading libraries
 
 ```{r}
-library(quarto)
-library(here)
+library("quarto")
+library("here")
 ```
 
 ## Render to HTML
