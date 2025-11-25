@@ -17,9 +17,9 @@ library(tidyverse)
 kidney_merged_GFR <- read.csv("../data/03_data_augment.csv")
 ```
 
-## Treating NA values
+## Inspecting NA values
 
-The missing values are going to be handled in separate analysis individually. The percentage of NAs in each column is summarized here:
+The percentage of NAs in each column is summarized here:
 
 ```{r calculate_NAs}
 
