@@ -82,7 +82,6 @@ After the addition of classification in the previous step, the final dataset has
 ```{r get_nRC}
 dim(kidney_merged_GFR)
 ```
-
 ## Inspecting NA values
 
 The percentage of NAs in each column is summarized here:
@@ -98,6 +97,7 @@ nas |>
   mean() 
 ```
 
+<<<<<<< HEAD
 The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%. We decided not to delete all rows with missing values, as this would result in a drop of observations from 400 to 158. Therefore, we will handle them individually in the analysis.
 
 ```{r get_rows}
@@ -140,7 +140,9 @@ table1(
 
 ## Age distribution
 
+<<<<<<< HEAD
 Individuals in the dataset include people from 2 to 90 years old. Table1 shows the median, however, we can also visualise the age distribution for a better overview. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are represented only by diagnosed individuals.
+
 
 ```{r count_people_in_age_group}
 kidney_filter <- kidney_merged_GFR |>  
