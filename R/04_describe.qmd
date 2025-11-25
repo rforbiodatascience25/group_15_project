@@ -34,6 +34,22 @@ nas |>
 
 The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%.
 
+## Table 1
+
+```{r generate_table1}
+library("table1")
+
+table1(
+  ~ age +
+    age_group +
+    cdk_stage
+    |
+    classification,
+  data = kidney_merged_GFR
+)
+
+```
+
 ## Age distribution
 
 Individuals in the dataset include people from 0 to 90 years old. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are only represented by diagnosed individuals
