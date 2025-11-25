@@ -7,7 +7,7 @@ format: html
 
 ## Joel
 
-## New code 
+## New code
 
 ```{r}
 # 1) Pivot to long format for the key continuous predictors
