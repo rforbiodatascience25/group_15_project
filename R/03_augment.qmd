@@ -166,6 +166,13 @@ kidney_merged_GFR |>
 
 We see that most fall within stage 1 (normal) or stage 2 (mild). This confirms that our estimation is reasonable, and we can speculate that the relatively large number of individuals that fall within the mild to moderate category might be overestimated due to the use of GFR average.
 
+## Dropping ID column
+
+```{r}
+kidney_merged_GFR <- kidney_merged_GFR |>
+  select(-id)
+```
+
 ## Saving augmented data
 
 ```{r}
