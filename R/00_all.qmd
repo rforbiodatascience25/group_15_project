@@ -9,3 +9,12 @@ execute:
   message: false
   warning: false
 ---
+
+## Install dependencies
+
+```{r}
+install.packages("PerformanceAnalytics")
+install.packages("randomForest")
+install.packages("caret")
+install.packages("tidyverse")
+```

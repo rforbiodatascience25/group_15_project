@@ -56,7 +56,6 @@ kidney_renamed <- kidney_disease |>
     anemia = ane,
     classification = classification
   )
-summary(kidney_renamed)
 ```
 
 ## Fixing column types
@@ -64,17 +63,25 @@ summary(kidney_renamed)
 In the raw data, some columns with numeric observations were classified as characters; these are changed into the numeric type. The characters are changed to factors for future manipulation.
 
 ```{r}
-kidney_clean <- kidney_renamed |>
+kidney_clean <- kidney_renamed
+
+# remove readr specs (this turns the tibble into a normal tibble)
+attr(kidney_clean, "spec") <- NULL
+attr(kidney_clean, "problems") <- NULL
+
+kidney_clean <- kidney_clean |>
   mutate(
     packed_cell_volume = as.numeric(packed_cell_volume),
     white_blood_cell_count = as.numeric(white_blood_cell_count),
-    red_blood_cell_count = as.numeric(red_blood_cell_count),
-    across(where(is.character), as.factor)
-  )
+    red_blood_cell_count = as.numeric(red_blood_cell_count)
+  ) |>
+  mutate(across(where(is.character), as.factor))
+
+str(kidney_clean)
 ```
 
 ## Save clean data in a new file
 
 ```{r}
-write_csv(kidney_clean, "../data/02_data_clean.csv")
+write_rds(kidney_clean, "../data/02_data_clean.rds")
 ```
