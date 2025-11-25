@@ -2201,9 +2201,9 @@ vertical-align: -.125em;
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>packages <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;PerformanceAnalytics&quot;</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;randomForest&quot;</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;caret&quot;</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;tidyverse&quot;</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;quarto&quot;</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;tidyverse&quot;</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;quarto&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;caret&quot;</span>,</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;here&quot;</span>,</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;gt&quot;</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  )</span>
@@ -2215,411 +2215,41 @@ vertical-align: -.125em;
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+<section id="loading-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="loading-libraries">Loading libraries</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
 <section id="render-to-html" class="level2">
 <h2 class="anchored" data-anchor-id="render-to-html">Render to HTML</h2>
 <p>Renders and moves to the results folder all the Quarto files</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>project_root <span class="ot">&lt;-</span> <span class="fu">here</span>()</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>results_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;results&quot;</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(results_dir)) <span class="fu">dir.create</span>(results_dir)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>qmd_files <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;01_load.qmd&quot;</span>, <span class="st">&quot;02_clean.qmd&quot;</span>, <span class="st">&quot;03_augment.qmd&quot;</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;04_describe.qmd&quot;</span>, <span class="st">&quot;05_analysis_1.qmd&quot;</span>, <span class="st">&quot;06_analysis_2.qmd&quot;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (file <span class="cf">in</span> qmd_files) {</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  qmd_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;R&quot;</span>, file)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quarto_render</span>(<span class="at">input =</span> qmd_path)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  html_source <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;R&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.qmd$&quot;</span>, <span class="st">&quot;.html&quot;</span>, file))</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  html_dest <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;results&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.qmd$&quot;</span>, <span class="st">&quot;.html&quot;</span>, file))</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">file.exists</span>(html_source)) {</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">file.rename</span>(<span class="at">from =</span> html_source, <span class="at">to =</span> html_dest)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Moved: &quot;</span>, <span class="fu">basename</span>(html_dest))</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">&quot;File not found: &quot;</span>, html_source)</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-
-processing file: 01_load.qmd
-
-  |                                                          
-  |                                                    |   0%
-  |                                                          
-  |.................                                   |  33%                  
-  |                                                          
-  |...................................                 |  67% [unnamed-chunk-1]
-  |                                                          
-  |....................................................| 100%                  
-                                                                                                            
-output file: 01_load.knit.md
-
-pandoc 
-  to: html
-  output-file: 01_load.html
-  standalone: true
-  embed-resources: true
-  section-divs: true
-  html-math-method: mathjax
-  wrap: none
-  default-image-extension: png
-  variables: {}
-  
-metadata
-  document-css: false
-  link-citations: true
-  date-format: long
-  lang: en
-  title: 01_load
-  editor: visual
-  
-Output created: 01_load.html</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-
-processing file: 02_clean.qmd
-
-  |                                                          
-  |                                                    |   0%
-  |                                                          
-  |.....                                               |   9%                  
-  |                                                          
-  |.........                                           |  18% [unnamed-chunk-1]
-  |                                                          
-  |..............                                      |  27%                  
-  |                                                          
-  |...................                                 |  36% [unnamed-chunk-2]
-  |                                                          
-  |........................                            |  45%                  
-  |                                                          
-  |............................                        |  55% [unnamed-chunk-3]
-  |                                                          
-  |.................................                   |  64%                  
-  |                                                          
-  |......................................              |  73% [unnamed-chunk-4]
-  |                                                          
-  |...........................................         |  82%                  
-  |                                                          
-  |...............................................     |  91% [unnamed-chunk-5]
-  |                                                          
-  |....................................................| 100%                  
-                                                                                                            
-output file: 02_clean.knit.md
-
-pandoc 
-  to: html
-  output-file: 02_clean.html
-  standalone: true
-  embed-resources: true
-  section-divs: true
-  html-math-method: mathjax
-  wrap: none
-  default-image-extension: png
-  variables: {}
-  
-metadata
-  document-css: false
-  link-citations: true
-  date-format: long
-  lang: en
-  title: 02_clean
-  editor: visual
-  
-Output created: 02_clean.html</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-
-processing file: 03_augment.qmd
-
-  |                                                  
-  |                                            |   0%
-  |                                                  
-  |..                                          |   4%                          
-  |                                                  
-  |....                                        |   9% [load_packages]          
-  |                                                  
-  |......                                      |  13%                          
-  |                                                  
-  |........                                    |  17% [unnamed-chunk-1]        
-  |                                                  
-  |..........                                  |  22%                          
-  |                                                  
-  |...........                                 |  26% [create_age_groups]      
-  |                                                  
-  |.............                               |  30%                          
-  |                                                  
-  |...............                             |  35% [split_data]             
-  |                                                  
-  |.................                           |  39%                          
-  |                                                  
-  |...................                         |  43% [merge_data]             
-  |                                                  
-  |.....................                       |  48%                          
-  |                                                  
-  |.......................                     |  52% [sanity_check]           
-  |                                                  
-  |.........................                   |  57%                          
-  |                                                  
-  |...........................                 |  61% [estimate_GFR]           
-  |                                                  
-  |.............................               |  65%                          
-  |                                                  
-  |...............................             |  70% [CKD_stages]             
-  |                                                  
-  |.................................           |  74%                          
-  |                                                  
-  |..................................          |  78% [CKD_stages_sanity_check]
-  |                                                  
-  |....................................        |  83%                          
-  |                                                  
-  |......................................      |  87% [unnamed-chunk-2]        
-  |                                                  
-  |........................................    |  91%                          
-  |                                                  
-  |..........................................  |  96% [unnamed-chunk-3]        
-  |                                                  
-  |............................................| 100%                          
-                                                                                                                    
-output file: 03_augment.knit.md
-
-pandoc 
-  to: html
-  output-file: 03_augment.html
-  standalone: true
-  embed-resources: true
-  section-divs: true
-  html-math-method: mathjax
-  wrap: none
-  default-image-extension: png
-  variables: {}
-  
-metadata
-  document-css: false
-  link-citations: true
-  date-format: long
-  lang: en
-  title: 03_augment
-  editor: visual
-  
-Output created: 03_augment.html</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-
-processing file: 04_describe.qmd
-
-  |                                                
-  |                                          |   0%
-  |                                                
-  |..                                        |   5%                            
-  |                                                
-  |....                                      |  11% [load_libraries]           
-  |                                                
-  |.......                                   |  16%                            
-  |                                                
-  |.........                                 |  21% [load_data]                
-  |                                                
-  |...........                               |  26%                            
-  |                                                
-  |.............                             |  32% [variable_table]           
-  |                                                
-  |...............                           |  37%                            
-  |                                                
-  |..................                        |  42% [get_nRC]                  
-  |                                                
-  |....................                      |  47%                            
-  |                                                
-  |......................                    |  53% [calculate_NAs]            
-  |                                                
-  |........................                  |  58%                            
-  |                                                
-  |...........................               |  63% [get_rows]                 
-  |                                                
-  |.............................             |  68%                            
-  |                                                
-  |...............................           |  74% [generate_table1]          
-  |                                                
-  |.................................         |  79%                            
-  |                                                
-  |...................................       |  84% [count_people_in_age_group]
-  |                                                
-  |......................................    |  89%                            
-  |                                                
-  |........................................  |  95% [heatmap]                  
-  |                                                
-  |..........................................| 100%                            
-                                                                                                                      
-output file: 04_describe.knit.md
-
-pandoc 
-  to: html
-  output-file: 04_describe.html
-  standalone: true
-  embed-resources: true
-  section-divs: true
-  html-math-method: mathjax
-  wrap: none
-  default-image-extension: png
-  variables: {}
-  
-metadata
-  document-css: false
-  link-citations: true
-  date-format: long
-  lang: en
-  title: 04_describe
-  editor: visual
-  
-Output created: 04_describe.html</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-
-processing file: 05_analysis_1.qmd
-
-  |                                                         
-  |                                                   |   0%
-  |                                                         
-  |..                                                 |   5%                   
-  |                                                         
-  |.....                                              |  10% [unnamed-chunk-1] 
-  |                                                         
-  |.......                                            |  14%                   
-  |                                                         
-  |..........                                         |  19% [unnamed-chunk-2] 
-  |                                                         
-  |............                                       |  24%                   
-  |                                                         
-  |...............                                    |  29% [unnamed-chunk-3] 
-  |                                                         
-  |.................                                  |  33%                   
-  |                                                         
-  |...................                                |  38% [unnamed-chunk-4] 
-  |                                                         
-  |......................                             |  43%                   
-  |                                                         
-  |........................                           |  48% [unnamed-chunk-5] 
-  |                                                         
-  |...........................                        |  52%                   
-  |                                                         
-  |.............................                      |  57% [unnamed-chunk-6] 
-  |                                                         
-  |................................                   |  62%                   
-  |                                                         
-  |..................................                 |  67% [unnamed-chunk-7] 
-  |                                                         
-  |....................................               |  71%                   
-  |                                                         
-  |.......................................            |  76% [unnamed-chunk-8] 
-  |                                                         
-  |.........................................          |  81%                   
-  |                                                         
-  |............................................       |  86% [unnamed-chunk-9] 
-  |                                                         
-  |..............................................     |  90%                   
-  |                                                         
-  |.................................................  |  95% [unnamed-chunk-10]
-  |                                                         
-  |...................................................| 100%                   
-                                                                                                             
-output file: 05_analysis_1.knit.md
-
-pandoc 
-  to: html
-  output-file: 05_analysis_1.html
-  standalone: true
-  embed-resources: true
-  section-divs: true
-  html-math-method: mathjax
-  wrap: none
-  default-image-extension: png
-  variables: {}
-  
-metadata
-  document-css: false
-  link-citations: true
-  date-format: long
-  lang: en
-  title: 05_analysis_1
-  editor: visual
-  
-Output created: 05_analysis_1.html</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-
-processing file: 06_analysis_2.qmd
-
-  |                                                          
-  |                                                    |   0%
-  |                                                          
-  |...                                                 |   6%                  
-  |                                                          
-  |......                                              |  12% [unnamed-chunk-1]
-  |                                                          
-  |.........                                           |  18%                  
-  |                                                          
-  |............                                        |  24% [unnamed-chunk-2]
-  |                                                          
-  |...............                                     |  29%                  
-  |                                                          
-  |..................                                  |  35% [unnamed-chunk-3]
-  |                                                          
-  |.....................                               |  41%                  
-  |                                                          
-  |........................                            |  47% [unnamed-chunk-4]
-  |                                                          
-  |............................                        |  53%                  
-  |                                                          
-  |...............................                     |  59% [unnamed-chunk-5]
-  |                                                          
-  |..................................                  |  65%                  
-  |                                                          
-  |.....................................               |  71% [unnamed-chunk-6]
-  |                                                          
-  |........................................            |  76%                  
-  |                                                          
-  |...........................................         |  82% [unnamed-chunk-7]
-  |                                                          
-  |..............................................      |  88%                  
-  |                                                          
-  |.................................................   |  94% [unnamed-chunk-8]
-  |                                                          
-  |....................................................| 100%                  
-                                                                                                            
-output file: 06_analysis_2.knit.md
-
-pandoc 
-  to: html
-  output-file: 06_analysis_2.html
-  standalone: true
-  embed-resources: true
-  section-divs: true
-  html-math-method: mathjax
-  wrap: none
-  default-image-extension: png
-  variables: {}
-  
-metadata
-  document-css: false
-  link-citations: true
-  date-format: long
-  lang: en
-  title: 06_analysis_2
-  editor: visual
-  
-Output created: 06_analysis_2.html</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>project_root <span class="ot">&lt;-</span> <span class="fu">here</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>results_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;results&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(results_dir)) <span class="fu">dir.create</span>(results_dir)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>qmd_files <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;01_load.qmd&quot;</span>, <span class="st">&quot;02_clean.qmd&quot;</span>, <span class="st">&quot;03_augment.qmd&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;04_describe.qmd&quot;</span>, <span class="st">&quot;05_analysis_1.qmd&quot;</span>, <span class="st">&quot;06_analysis_2.qmd&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (file <span class="cf">in</span> qmd_files) {</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  qmd_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;R&quot;</span>, file)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quarto_render</span>(<span class="at">input =</span> qmd_path)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  html_source <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;R&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.qmd$&quot;</span>, <span class="st">&quot;.html&quot;</span>, file))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  html_dest <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">&quot;results&quot;</span>, <span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.qmd$&quot;</span>, <span class="st">&quot;.html&quot;</span>, file))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">file.exists</span>(html_source)) {</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">file.rename</span>(<span class="at">from =</span> html_source, <span class="at">to =</span> html_dest)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Moved: &quot;</span>, <span class="fu">basename</span>(html_dest))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">&quot;File not found: &quot;</span>, html_source)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 

@@ -10,14 +10,18 @@ execute:
   warning: false
 ---
 
-### Load the data
+## Loading libraries
+
+```{r}
+library("tidyverse")
+library("here")
+```
+
+## Loading data
 
 Checking if the data folder is there and if not, creates it and writes the loaded data file.
 
 ```{r}
-library(tidyverse)
-library(here)
-
 project_root <- here()
 data_dir <- here("data")
 if (!dir.exists(data_dir)) dir.create(data_dir)
@@ -26,6 +30,4 @@ input_file <- here("_raw", "kidney_disease.csv")
 output_file <- here("data", "01_data_load.csv")
 
 read_csv(input_file) |> write_csv(output_file)
-
-
 ```

@@ -2201,14 +2201,14 @@ vertical-align: -.125em;
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;tidyverse&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="loading-the-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="loading-the-dataset">Loading the dataset</h2>
+<section id="loading-data" class="level2">
+<h2 class="anchored" data-anchor-id="loading-data">Loading data</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kidney_disease <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;../data/01_data_load.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="changing-the-column-names" class="level2">
-<h2 class="anchored" data-anchor-id="changing-the-column-names">Changing the column names</h2>
+<section id="changing-column-names" class="level2">
+<h2 class="anchored" data-anchor-id="changing-column-names">Changing column names</h2>
 <p>In this step, we have renamed the original dataset column names to more understandable terms instead of small abbreviations that might seem cryptic.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kidney_renamed <span class="ot">&lt;-</span> kidney_disease <span class="sc">|&gt;</span></span>
@@ -2292,8 +2292,8 @@ vertical-align: -.125em;
 </div>
 </div>
 </section>
-<section id="save-clean-data-in-a-new-file" class="level2">
-<h2 class="anchored" data-anchor-id="save-clean-data-in-a-new-file">Save clean data in a new file</h2>
+<section id="saving-clean-data" class="level2">
+<h2 class="anchored" data-anchor-id="saving-clean-data">Saving clean data</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(kidney_clean, <span class="st">&quot;../data/02_data_clean.rds&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

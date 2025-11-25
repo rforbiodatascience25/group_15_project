@@ -2344,8 +2344,8 @@ window.Quarto = {
 <li><p>Create age groups</p></li>
 </ul>
 </section>
-<section id="create-age-groups" class="level2">
-<h2 class="anchored" data-anchor-id="create-age-groups">Create age groups</h2>
+<section id="loading-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="loading-libraries">Loading libraries</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;tidyverse&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -2355,6 +2355,9 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kidney_clean <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">&quot;../data/02_data_clean.rds&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="data-augmentation-1" class="level2">
+<h2 class="anchored" data-anchor-id="data-augmentation-1">Data augmentation</h2>
 <p>Here, we modify the cleaned dataset to prepare it for analysis. As a first step, we simply categorize the ages into age groups by intervals of 10, and re-order the data such that the new <code>age_group</code> column is after <code>age</code> for improved structure.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kidney_augmented <span class="ot">&lt;-</span> kidney_clean <span class="sc">|&gt;</span> </span>
@@ -2387,11 +2390,10 @@ window.Quarto = {
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;classification&quot;</span>)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>kidney_diagnoses <span class="ot">&lt;-</span> kidney_augmented <span class="sc">|&gt;</span> </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>         diagnoses)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>kidney_vitals <span class="ot">&lt;-</span> kidney_augmented <span class="sc">|&gt;</span> </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>diagnoses)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(id, diagnoses))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>kidney_vitals <span class="ot">&lt;-</span> kidney_augmented <span class="sc">|&gt;</span> </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>diagnoses)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If we want, these data can be joined again. <code>id</code> can be used as an identifier which we can merge the data by. We can do this with either <code>inner_join</code> or <code>full_join</code>, the results will be the same as we know that everything in each dataframe have matching keys since they share origin.</p>
 <div class="cell">
@@ -2452,13 +2454,14 @@ window.Quarto = {
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>kidney_merged_GFR <span class="ot">&lt;-</span> kidney_merged_GFR <span class="sc">|&gt;</span> </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cdk_stage =</span> <span class="fu">case_when</span>(</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      GFR_average <span class="sc">&gt;</span> <span class="dv">90</span> <span class="sc">~</span> <span class="st">&quot;stage_1&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      GFR_average <span class="sc">&gt;</span> <span class="dv">90</span>                     <span class="sc">~</span> <span class="st">&quot;stage_1&quot;</span>,</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      GFR_average <span class="sc">&lt;</span> <span class="dv">90</span> <span class="sc">&amp;</span> GFR_average <span class="sc">&gt;=</span> <span class="dv">60</span> <span class="sc">~</span> <span class="st">&quot;stage_2&quot;</span>,</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      GFR_average <span class="sc">&lt;</span> <span class="dv">60</span> <span class="sc">&amp;</span> GFR_average <span class="sc">&gt;=</span> <span class="dv">45</span> <span class="sc">~</span> <span class="st">&quot;stage_3a&quot;</span>,</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      GFR_average <span class="sc">&lt;</span> <span class="dv">45</span> <span class="sc">&amp;</span> GFR_average <span class="sc">&gt;=</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">&quot;stage_3b&quot;</span>,</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      GFR_average <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">&amp;</span> GFR_average <span class="sc">&gt;=</span> <span class="dv">15</span> <span class="sc">~</span> <span class="st">&quot;stage_4&quot;</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      GFR_average <span class="sc">&lt;</span> <span class="dv">15</span> <span class="sc">~</span> <span class="st">&quot;stage_5&quot;</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      GFR_average <span class="sc">&lt;</span> <span class="dv">15</span>                     <span class="sc">~</span> <span class="st">&quot;stage_5&quot;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>As a quick sanity check, we can observe the chronic kidney disease stages <code>cdk_stage</code> in individuals who do not have chronic kidney disease <code>notcdk</code>, as it stands to reason that these would not be in advanced stages.</p>
 <div class="cell">
