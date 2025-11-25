@@ -126,19 +126,18 @@ Visualization
 
 ```{r}
 kidney_analysis |>
-drop_na(hypertension, classification) |>
+  drop_na(hypertension, classification) |>
   ggplot(aes(x = hypertension, fill = classification)) +
-  geom_bar(position = "fill") +
+  geom_bar(position = "dodge") +   
   theme_minimal() +
   labs(
     title = "Hypertension by CKD classification",
     x = "Hypertension",
-    y = "Proportion within hypertension group"
-    ) +
-scale_y_continuous(labels = scales::percent_format()) +
-scale_fill_manual(
-  values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-  labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+    y = "Number of people"
+  ) +
+  scale_fill_manual(
+    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
   )
 
 ```
@@ -158,17 +157,17 @@ kidney_analysis |>
 kidney_analysis |>
   drop_na(diabetes_mellitus, classification) |>
   ggplot(aes(x = diabetes_mellitus, fill = classification)) +
-  geom_bar(position = "fill") +
+  geom_bar(position = "dodge") +   # <-- side by side count comparison
   theme_minimal() +
   labs(
     title = "Diabetes mellitus by CKD classification",
     x = "Diabetes mellitus",
-    y = "Proportion within diabetes group"
-) +
-scale_y_continuous(labels = scales::percent_format()) +
-scale_fill_manual(
-  values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-  labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-)
+    y = "Number of people"
+  ) +
+  scale_fill_manual(
+    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+  )
+
 
 ```
