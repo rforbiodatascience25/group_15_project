@@ -87,7 +87,7 @@ train <- data[idx,]
 test <- data[-idx,]
 
 rf2 <- train |> 
-  randomForest(classification ~ packed_cell_volume + hemoglobin + 
+  randomForest(classification ~ packed_cell_volume + hemoglobin +
                  serum_creatinine + red_blood_cell_count + albumin + hypertension + diabetes_mellitus,
                data = _, 
                importance = T, 
