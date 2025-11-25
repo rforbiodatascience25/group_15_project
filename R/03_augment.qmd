@@ -132,17 +132,11 @@ However, because we lack sex data, estimates for both the male and female GFR wi
 ```{r estimate_GFR}
 calculate_GFR <- function(dataframe) {
    dataframe |> 
-    mutate( #pmax/pmin instead of max/min in order to iterate over each creatinine value
-      GFR_male = 142 * pmin(serum_creatinine / 0.9, 1)**(-0.302) 
-      * pmax(serum_creatinine / 0.9, 1) ** (-1.2) * (0.9938**age)
-      ) |> 
-    mutate(
-      GFR_female = 142 * pmin(serum_creatinine / 0.7, 1)**(-0.241) 
-      * pmax(serum_creatinine / 0.7, 1) ** (-1.2) * (0.9938**age) * 1.012
-      ) |> 
-     mutate(
-       GFR_average = (GFR_female + GFR_male) / 2
-       )
+    mutate(GFR_male = 142 * pmin(serum_creatinine / 0.9, 1)**(-0.302) 
+           * pmax(serum_creatinine / 0.9, 1) ** (-1.2) * (0.9938**age)) |> 
+    mutate(GFR_female = 142 * pmin(serum_creatinine / 0.7, 1)**(-0.241)
+           * pmax(serum_creatinine / 0.7, 1) ** (-1.2) * (0.9938**age) * 1.012) |>
+    mutate(GFR_average = (GFR_female + GFR_male) / 2)
 }
 
 kidney_merged_GFR <- calculate_GFR(kidney_merged)
@@ -159,8 +153,7 @@ kidney_merged_GFR <- kidney_merged_GFR |>
       GFR_average < 60 & GFR_average >= 45 ~ "stage_3a",
       GFR_average < 45 & GFR_average >= 30 ~ "stage_3b",
       GFR_average < 30 & GFR_average >= 15 ~ "stage_4",
-      GFR_average < 15 ~ "stage_5"
-    )
+      GFR_average < 15 ~ "stage_5")
   )
 ```
 
