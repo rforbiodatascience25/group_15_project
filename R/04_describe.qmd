@@ -25,6 +25,7 @@ The missing values are going to be handled in separate analysis individually. Th
 ```{r calculate NAs %}
 nas <- kidney_merged_GFR |> 
      summarise(across(everything(), ~mean(is.na(.)) * 100))
+
 view(nas)
 
 nas |> 
