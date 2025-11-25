@@ -91,3 +91,39 @@ ggplot(kidney_filter, aes(age_group, fill = classification)) +
   fill = "Classification") 
 
 ```
+
+## CDK stage distribution
+
+CDK stage is missing from the table 1, but it would be interesting to see.
+
+```{r CDK_stage_distribution}
+stage_labs <- c("Normal", 
+                "Mild", 
+                "Mild to moderate", 
+                "Moderate to severe",
+                "Severe", 
+                "Failure")
+
+kidney_merged_GFR |>
+  subset(!is.na(cdk_stage)) |> 
+  ggplot(
+    aes(cdk_stage, 
+        fill = classification)
+  ) +
+  geom_bar(
+    position = position_dodge(preserve = "single")
+    ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45,
+                               hjust = 1)
+  ) + 
+  labs(
+    title = "Chronic Kidney Disease (CKD) stage distribution.",
+    x = NULL
+  ) +
+  scale_x_discrete(labels = stage_labs)
+
+```
+
+We see that most of those without CDK fall within normal to mild, which is to be expected. Among individuals with CDK, most have advanced stages of moderate or more, with over 60 falling within the kidney failure category.
