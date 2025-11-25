@@ -36,13 +36,32 @@ The category with the most missing values is the classification of red blood cel
 
 ## Table 1
 
+We can create a table1 to give us a broad overview about the data. In doing this, we see that there are 250 individuals with chronic kidney disease, and 150 without. Among these, the mean age is 54.5 and 46.5 respectively.
+
 ```{r generate_table1}
 library("table1")
 
 table1(
   ~ age +
-    age_group +
-    cdk_stage
+    blood_pressure +
+    specific_gravity +
+    albumin +
+    sugar +
+    serum_creatinine +
+    blood_urea +
+    GFR_average +
+    red_blood_cells +
+    pus_cells +
+    pus_cell_clumps +
+    bacteria +
+    hemoglobin +
+    packed_cell_volume +
+    diabetes_mellitus +
+    hypertension +
+    coronary_artery_disease +
+    appetite +
+    anemia +
+    pedal_edema
     |
     classification,
   data = kidney_merged_GFR
@@ -52,7 +71,7 @@ table1(
 
 ## Age distribution
 
-Individuals in the dataset include people from 0 to 90 years old. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are only represented by diagnosed individuals
+Individuals in the dataset include people from 2 to 90 years old. Table1 shows the median, but we can also plot the age distribution for a better overview. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are only represented by diagnosed individuals
 
 ```{r count_people_in_age_group}
 kidney_merged_GFR |> 
