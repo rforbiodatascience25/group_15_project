@@ -1,5 +1,174 @@
 ---
 title: "03_augment"
-format: html
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
 
+# Data augmentation
+
+## Content ideas - enhanced dataset
+
+-   If needed and relevant, categorize blood pressure into low, normal, high, very high
+
+-   summary statistics to begin the analysis
+
+-   Create age groups
+
+## Create age groups
+
+```{r load_packages}
+library(tidyverse)
+```
+
+## Loading clean data
+
+```{r}
+kidney_clean <- read_csv("../data/02_data_clean.csv")
+```
+
+Here, we modify the cleaned dataset to prepare it for analysis. As a first step, we simply categorize the ages into age groups by intervals of 10, and re-order the data such that the new `age_group` column is after `age` for improved structure.
+
+```{r create_age_groups}
+kidney_augmented <- kidney_clean |> 
+  mutate(age_group = case_when(age <= 10 ~ "0-10",
+                               age > 10 & age <= 20  ~ "11-20",
+                               age > 20 & age <= 30  ~ "21-30",
+                               age > 30 & age <= 40  ~ "31-40",
+                               age > 40 & age <= 50  ~ "41-50",
+                               age > 50 & age <= 60  ~ "51-60",
+                               age > 60 & age <= 70  ~ "61-70",
+                               age > 70 & age <= 80  ~ "71-80",
+                               age > 80 & age <= 90  ~ "81-90",
+                               age > 90 & age <= 100 ~ "91-100")) |> 
+  relocate(age_group,
+           .after = age)
+```
+
+## Split and join
+
+Next, we split the dataset into two dataframes:
+
+-   One with only the diagnoses (`hypertension`, `coronary_artery_disease`, `anemia`, `pedal_edema,` and `classification)`
+
+-   One with the remaining vitals and age information.
+
+```{r split_data}
+diagnoses = c("hypertension",
+              "coronary_artery_disease",
+              "anemia",
+              "pedal_edema",
+              "classification")
+
+kidney_diagnoses <- kidney_augmented |> 
+  select(id,
+         diagnoses)
+
+kidney_vitals <- kidney_augmented |> 
+  select(!diagnoses)
+```
+
+If we want, these data can be joined again. `id` can be used as an identifier which we can merge the data by. We can do this with either `inner_join` or `full_join`, the results will be the same as we know that everything in each dataframe have matching keys since they share origin.
+
+```{r merge_data}
+kidney_merged <- full_join(kidney_vitals,
+                           kidney_diagnoses, 
+                           by = "id")
+```
+
+As a sanity check, we can make sure that the dimensions of the merged dataframe is the same as `kidney_augmented`.
+
+```{r sanity_check}
+merged_dims <- kidney_merged |> 
+  dim()
+
+augmented_dims <- kidney_augmented |> 
+  dim()
+
+if (merged_dims[1] != augmented_dims[1] |
+    merged_dims[2] != augmented_dims[2]) {
+  warning("Dataframe dimensions not matching")
+}
+```
+
+## Glomerular Filtration Rate (GFR) estimation
+
+With the data, we can estimate the [glomerular filtration rate (GFR)](https://www.ncbi.nlm.nih.gov/books/NBK500032/), which is a measurement of how well kidneys filter waste from blood by estimating the amount of blood that pass through glomeruli of the kidneys. Using this, we can categorize the stage of kidney failure by these stages:
+
+-   **Stage 1, normal**: \>90 ml per minute
+
+-   **Stage 2, mild**: 60-89 ml per minute
+
+-   **Stage 3a, mild to moderate**: 45-59 ml per minute
+
+-   **Stage 3b, moderate to severe**: 30-44 ml per minute
+
+-   **Stage 4, severe**: 15-29 ml per minute
+
+-   **Stage 5, failure**: \<15 ml per minute
+
+Estimation of GFR is achieved by the [CDK-EPI equation](#0):
+
+$$
+\text{eGFR}_{\text{cr}} = 142 \times \min\left(\frac{\text{Scr}}{\kappa},\, 1\right)^{\alpha}\times \max\left(\frac{\text{Scr}}{\kappa},\, 1\right)^{-1.200}\times 0.9938^{\text{Age}}\times 1.012 \;\; \text{[if female]}
+$$
+
+Where:
+
+-   S~cr~ = standardized serum creatinine in mg/dL
+
+-   κ = 0.7 (females) or 0.9 (males)
+
+-   α = -0.241 (female) or -0.302 (male)
+
+However, because we lack sex data, estimates for both the male and female GFR will be calculated and the average reported. This is not a medically sound approach, and we are aware that the estimates are likely to be inaccurate. However, for our purposes, it suffices.
+
+```{r estimate_GFR}
+calculate_GFR <- function(dataframe) {
+   dataframe |> 
+    mutate(GFR_male = 142 * pmin(serum_creatinine / 0.9, 1)**(-0.302) 
+           * pmax(serum_creatinine / 0.9, 1) ** (-1.2) * (0.9938**age)) |> 
+    mutate(GFR_female = 142 * pmin(serum_creatinine / 0.7, 1)**(-0.241)
+           * pmax(serum_creatinine / 0.7, 1) ** (-1.2) * (0.9938**age) * 1.012) |>
+    mutate(GFR_average = (GFR_female + GFR_male) / 2)
+}
+
+kidney_merged_GFR <- calculate_GFR(kidney_merged)
+```
+
+With the average GFR, we can group individuals into the chronic kidney disease stages outlined above.
+
+```{r CKD_stages}
+kidney_merged_GFR <- kidney_merged_GFR |> 
+  mutate(
+    cdk_stage = case_when(
+      GFR_average > 90 ~ "stage_1",
+      GFR_average < 90 & GFR_average >= 60 ~ "stage_2",
+      GFR_average < 60 & GFR_average >= 45 ~ "stage_3a",
+      GFR_average < 45 & GFR_average >= 30 ~ "stage_3b",
+      GFR_average < 30 & GFR_average >= 15 ~ "stage_4",
+      GFR_average < 15 ~ "stage_5")
+  )
+```
+
+As a quick sanity check, we can observe the chronic kidney disease stages `cdk_stage` in individuals who do not have chronic kidney disease `notcdk`, as it stands to reason that these would not be in advanced stages.
+
+```{r CKD_stages_sanity_check}
+kidney_merged_GFR |> 
+  filter(classification == "notckd") |> 
+  count(cdk_stage)
+```
+
+We see that most fall within stage 1 (normal) or stage 2 (mild). This confirms that our estimation is reasonable, and we can speculate that the relatively large number of individuals that fall within the mild to moderate category might be overestimated due to the use of GFR average.
+
+## Saving augmented data
+
+```{r}
+write_csv(kidney_merged_GFR,
+          "../data/03_data_augment.csv")
+```

@@ -3,3 +3,6 @@ title: "06_analysis_2"
 format: html
 ---
 
+## Giosuè
+
+## Joel

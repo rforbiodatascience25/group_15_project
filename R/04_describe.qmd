@@ -1,5 +1,58 @@
 ---
 title: "04_describe"
-format: html
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
 
+## Load data
+
+```{r load library and data}
+library(tidyverse)
+kidney_merged_GFR <- read.csv("../data/03_data_augment.csv")
+```
+
+## Inspecting NA values
+
+The percentage of NAs in each column is summarized here:
+
+```{r calculate_NAs}
+
+nas <- kidney_merged_GFR |> 
+     summarise(across(everything(), ~mean(is.na(.)) * 100))
+
+nas |> 
+  select(-red_blood_cells) |> 
+  unlist() |> 
+  mean() 
+```
+
+The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%.
+
+## Age distribution
+
+Individuals in the dataset include people from 0 to 90 years old. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are only represented by diagnosed individuals
+
+```{r count_people_in_age_group}
+kidney_merged_GFR |> 
+  group_by(age_group) |> 
+  summarise(count = n()) 
+
+kidney_filter <- kidney_merged_GFR |>  
+  drop_na(age_group) 
+
+ggplot(kidney_filter, aes(age_group, fill = classification)) +
+  geom_bar(
+    position = position_dodge(preserve = "single")) +
+  theme_minimal() +
+  labs(title="Age distribution",
+  x = ("Age Group"),
+  y = ("Count"),
+  fill = "Classification") 
+
+```

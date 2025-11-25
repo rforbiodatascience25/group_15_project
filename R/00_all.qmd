@@ -1,0 +1,11 @@
+---
+title: "00_all"
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
+---

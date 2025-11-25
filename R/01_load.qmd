@@ -1,5 +1,31 @@
 ---
 title: "01_load"
-format: html
+format:
+  html:
+    embed-resources: true
 editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
+
+### Load the data
+
+Checking if the data folder is there and if not, creates it and writes the loaded data file.
+
+```{r}
+library(tidyverse)
+
+
+data_dir <- "../data"
+
+if( !dir.exists(data_dir) ){
+  dir.create(path = data_dir)
+}
+
+
+"../_raw/kidney_disease.csv" |> 
+  read_csv() |>
+  write_csv("../data/01_data_load.csv")
+```

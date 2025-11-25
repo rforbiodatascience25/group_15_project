@@ -1,5 +1,80 @@
 ---
 title: "02_clean"
-format: html
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
 
+## Loading libraries
+
+```{r}
+library(tidyverse)
+```
+
+## Loading the dataset
+
+```{r}
+kidney_disease <- read_csv("../data/01_data_load.csv")
+```
+
+## Changing the column names
+
+In this step, we have renamed the original dataset column names to more understandable terms instead of small abbreviations that might seem cryptic.
+
+```{r}
+kidney_renamed <- kidney_disease |>
+  rename(
+    id = id,
+    age = age,
+    blood_pressure = bp,
+    specific_gravity = sg,
+    albumin = al,
+    sugar = su,
+    red_blood_cells = rbc,
+    pus_cells = pc,
+    pus_cell_clumps = pcc,
+    bacteria = ba,
+    blood_glucose_random = bgr,
+    blood_urea = bu,
+    serum_creatinine = sc,
+    sodium = sod,
+    potassium = pot,
+    hemoglobin = hemo,
+    packed_cell_volume = pcv,
+    white_blood_cell_count = wc,
+    red_blood_cell_count = rc,
+    hypertension = htn,
+    diabetes_mellitus = dm,
+    coronary_artery_disease = cad,
+    appetite = appet,
+    pedal_edema = pe,
+    anemia = ane,
+    classification = classification
+  )
+summary(kidney_renamed)
+```
+
+## Fixing column types
+
+In the raw data, some columns with numeric observations were classified as characters; these are changed into the numeric type. The characters are changed to factors for future manipulation.
+
+```{r}
+kidney_clean <- kidney_renamed |>
+  mutate(
+    packed_cell_volume = as.numeric(packed_cell_volume),
+    white_blood_cell_count = as.numeric(white_blood_cell_count),
+    red_blood_cell_count = as.numeric(red_blood_cell_count),
+    across(where(is.character), as.factor)
+  )
+```
+
+## Save clean data in a new file
+
+```{r}
+write_csv(kidney_clean, "../data/02_data_clean.csv")
+```
