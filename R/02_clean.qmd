@@ -10,15 +10,19 @@ execute:
   warning: false
 ---
 
-### Loading the Dataset
+## Loading libraries
 
 ```{r}
 library(tidyverse)
-
-kidney_disease <- read.csv("../data/01_data_load.csv")
 ```
 
-### Changing the column names
+## Loading the dataset
+
+```{r}
+kidney_disease <- read_csv("../data/01_data_load.csv")
+```
+
+## Changing the column names
 
 ```{r}
 kidney_renamed <- kidney_disease %>%
@@ -53,9 +57,9 @@ kidney_renamed <- kidney_disease %>%
 summary(kidney_renamed)
 ```
 
-### Column types fixed
+## Fixing column types
 
-In the raw data, some columns with numeric observations were classified as characters; these are changed into the numeric type.
+In the raw data, some columns with numeric observations were classified as characters; these are changed into the numeric type. The characters are changed to factors for future manipulation.
 
 ```{r}
 kidney_clean <- kidney_renamed %>%
@@ -67,17 +71,7 @@ kidney_clean <- kidney_renamed %>%
   )
 ```
 
-### NA's
-
-The missing values are going to be handled in separate analysis individually. The percentage of NAs in each column is summarized here:
-
-```{r}
-nas<-kidney_clean %>% 
-     summarise(across(everything(), ~mean(is.na(.)) * 100))
-view(nas)
-```
-
-### Save clean data in a new file
+## Save clean data in a new file
 
 ```{r}
 write_csv(kidney_clean, "../data/02_data_clean.csv")
