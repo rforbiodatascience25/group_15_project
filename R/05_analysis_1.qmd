@@ -10,169 +10,118 @@ execute:
   warning: false
 ---
 
-## Loading the data
+# Variables analysis
+
+## Loading libraries
 
 ```{r}
-library(tidyverse)
-
-kidney_merged_GFR <- read_rds("../data/03_data_augment.rds")
-
+library("PerformanceAnalytics")
+library("randomForest")
+library("tidyverse")
+library("caret")
 ```
 
-## Prepare variables for Analysis
-
-Here we make sure that the key categorical variables are treated as factors and that the CKD stages have an ordered structure.
+## Setting seed for reproducibility
 
 ```{r}
-kidney_analysis <- kidney_merged_GFR |>
-mutate(
-  classification = as.factor(classification),
-  hypertension = as.factor(hypertension),
-  diabetes_mellitus = as.factor(diabetes_mellitus),
-  coronary_artery_disease = as.factor(coronary_artery_disease),
-  anemia = as.factor(anemia),
-  pedal_edema = as.factor(pedal_edema),
-  cdk_stage = factor(
-    cdk_stage,
-    levels = c("stage_1", "stage_2", "stage_3a", "stage_3b", "stage_4", "stage_5"),
-    ordered = TRUE
-    )
-  )
-
-kidney_analysis |>
-  write_rds("../data/04_data_analysis.rds")
+set.seed(123)
 ```
 
-## Question 1: Is kidney function (GFR) lower in CKD patients?
-
-We expect individuals with a CKD diagnosis to have lower estimated glomerular filtration rate (GFR).
+## Loading augmented data
 
 ```{r}
-kidney_analysis |>
-  drop_na(GFR_average, classification) |>
-  group_by(classification) |>
-  summarise(
-    n = n(),
-    mean_GFR = mean(GFR_average),
-    median_GFR = median(GFR_average),
-    sd_GFR = sd(GFR_average)
-    )
-
+kidney_augmented <- read_rds("../data/03_data_augment.rds")
 ```
 
-Visualize GFR by CKD classification
+## Correlation plot
+
+The corr plot shows the correlation between all the numeric variables in the dataset, from there we can inspect if there is correlation between variables and how strong.
 
 ```{r}
-kidney_analysis |>
-  drop_na(GFR_average, classification) |>
-  ggplot(aes(x = classification, y = GFR_average, fill = classification)) +
-  geom_boxplot() +
-  theme_minimal() +
-  theme(legend.position="none") +
-  labs(
-    title = "Estimated GFR by CKD classification",
-    x = "Classification",
-    y = "Estimated GFR (ml/min)") +
-  scale_x_discrete(labels = c("CKD diagnosis", "No CKD diagnosis"))
-
+kidney_augmented |>
+  select(age, blood_pressure, blood_glucose_random, 
+         blood_urea, serum_creatinine, sodium, potassium, 
+         hemoglobin, packed_cell_volume, white_blood_cell_count, 
+         red_blood_cell_count, GFR_male, GFR_female, GFR_average) |>
+  chart.Correlation(histogram = TRUE, pch = 19)
 ```
 
-## Question 2: How are CKD stages distributed between diagnosed and non-diagnosed individuals?
+## Random forest analysis
 
-Here we look at how the GFR-based CKD stages are distributed in people with and without a CKD diagnosis.
+Using random forest we are inspecting the variable importance, to further select our variables. This also includes factor variables.
 
 ```{r}
-kidney_analysis |>
-  drop_na(cdk_stage, classification) |>
-  count(cdk_stage, classification) |>
-  group_by(classification) |>
-  mutate(prop = n / sum(n))
+data <- kidney_augmented |> 
+  na.omit() |>
+  select(-c(GFR_female, GFR_male, GFR_average, cdk_stage, specific_gravity))
 
+idx <- data$classification |>
+  createDataPartition(p = 0.6, list = F)
+
+train <- data[idx,]
+test <- data[-idx,]
+
+rf1 <- train |> 
+  randomForest(classification ~ ., data = _, importance = T, ntree = 600)
+
+plot(rf1$err.rate[,1], type='l')
 ```
 
+### Visualizing the confusion matrix
+
+This is used to see the model performance on the test set.
+
 ```{r}
-stage_labs <- c("Normal", 
-                "Mild", 
-                "Mild to moderate", 
-                "Moderate to severe",
-                "Severe", 
-                "Failure")
-
-kidney_analysis |>
-  drop_na(cdk_stage, classification) |>
-  ggplot(aes(x = cdk_stage, fill = classification)) +
-  geom_bar(position = "fill") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(
-    title = "Distribution of GFR-based CKD stages by classification",
-    x = NULL,
-    y = "Proportion within classification group"
-    ) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  scale_fill_discrete(
-    labels = c("ckd" = "CKD diagnosis", "notckd" = "No CKD diagnosis")
-    ) +
-  scale_x_discrete(labels = stage_labs)
-
+pred <- predict(rf1,test)
+confusionMatrix(pred,test$classification)
 ```
 
-## Question 3: Are hypertension and diabetes more common among CKD patients?
+### Variables importance plot
 
-Hypertension and diabetes are known risk factors for CKD. Here we compare their prevalence between groups.
+This plot is used to see how much each variable is influencing the accuracy of the model.
 
 ```{r}
-kidney_analysis |>
-  drop_na(hypertension, classification) |>
-  count(classification, hypertension) |>
-  group_by(classification) |>
-  mutate(prop = n / sum(n))
-
+varImpPlot(rf1)
 ```
 
-Visualization
+### Repeating random forest analysis with only important variables
 
 ```{r}
-kidney_analysis |>
-  drop_na(hypertension, classification) |>
-  ggplot(aes(x = hypertension, fill = classification)) +
-  geom_bar(
-    position = position_dodge(preserve = "single")) +   
-  theme_minimal() +
-  labs(
-    title = "Hypertension by CKD classification",
-    x = "Hypertension",
-    y = "Number of people"
-  ) +
-  scale_fill_discrete(
-    labels = c("ckd" = "CKD diagnosis", "notckd" = "No CKD diagnosis")
-    )
+kidney_augmented <- read_rds("../data/03_data_augment.rds")
 
+data <- kidney_augmented |> 
+  na.omit() |>
+  select(-c(GFR_female, GFR_male, GFR_average, cdk_stage, specific_gravity))
+
+idx <- data$classification |>
+  createDataPartition(p = 0.6, list = F)
+
+train <- data[idx,]
+test <- data[-idx,]
+
+rf2 <- train |> 
+  randomForest(classification ~ packed_cell_volume + hemoglobin +
+                 serum_creatinine + red_blood_cell_count + albumin + hypertension + diabetes_mellitus,
+               data = _, 
+               importance = T, 
+               ntree = 600)
+
+plot(rf2$err.rate[,1], type='l')
 ```
 
-## Diabetes vs Classification
+### Visualizing the confusion matrix
+
+This is used to see the model performance on the test set.
 
 ```{r}
-kidney_analysis |>
-  drop_na(diabetes_mellitus, classification) |>
-  count(classification, diabetes_mellitus) |>
-  group_by(classification) |>
-  mutate(prop = n / sum(n))
-
+pred <- predict(rf2,test)
+confusionMatrix(pred,test$classification)
 ```
 
+### Variables importance plot
+
+This plot is used to see how much each variable is influencing the accuracy of the model.
+
 ```{r}
-kidney_analysis |>
-  drop_na(diabetes_mellitus, classification) |>
-  ggplot(aes(x = diabetes_mellitus, fill = classification)) +
-  geom_bar(position = position_dodge(preserve = "single")) +
-  theme_minimal() +
-  labs(
-    title = "Diabetes mellitus by CKD classification",
-    x = "Diabetes mellitus",
-    y = "Number of people"
-  ) +
-  scale_fill_discrete(
-    labels = c("ckd" = "CKD diagnosis", "notckd" = "No CKD diagnosis")
-    )
+varImpPlot(rf2)
 ```
