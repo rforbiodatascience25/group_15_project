@@ -161,36 +161,6 @@ ggplot(kidney_filter, aes(age_group, fill = classification)) +
 
 We categorized CKD into stages based on the blood filtration efficiency. The plot above shows how many individuals are in which stage - Normal, Mild, Mild to Moderate, Moderate to Severe, Severe or Failure - the last one often requiring dialysis or transplant.
 
-```{r CDK_stage_distribution}
-stage_labs <- c("Normal", 
-                "Mild", 
-                "Mild to moderate", 
-                "Moderate to severe",
-                "Severe", 
-                "Failure")
-
-kidney_merged_GFR |>
-  subset(!is.na(cdk_stage)) |> 
-  ggplot(
-    aes(cdk_stage, 
-        fill = classification)
-  ) +
-  geom_bar(
-    position = position_dodge(preserve = "single")
-    ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45,
-                               hjust = 1)
-  ) + 
-  labs(
-    title = "Chronic Kidney Disease stage distribution.",
-    x = NULL
-  ) +
-  scale_x_discrete(labels = stage_labs)
-
-```
-
 As expected, we see that most of the individuals not diagnosed with CDK fall within the Normal to Mild category. On the contrary, among individuals with CDK, the majority of individuals belong to advanced stages of the disease, with GFR from 30 to 40, and over 60 people suffer from kidney failure.
 
 ```{r heatmap}
