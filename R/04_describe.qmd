@@ -15,6 +15,8 @@ execute:
 ```{r load library and data}
 library(tidyverse)
 library(gt)
+library("table1")
+
 kidney_merged_GFR <- read_rds("../data/03_data_augment.rds")
 ```
 
@@ -102,11 +104,9 @@ nrow(kidney_merged_GFR %>% drop_na())
 
 ## Table 1
 
-We can create a table1 to give us a broad overview about the data. In doing this, we see that there are 250 individuals with chronic kidney disease, and 150 without. Among these, the mean age is 54.5 and 46.5 respectively.
+This table provides us with descriptive statistics of the main characteristics of the data stratified by classification (ckd/notckd). We see that there are 250 individuals diagnosed with chronic kidney disease, and 150 not diagnosed, with mean age 54.5 and 46.5 for the two groups respectively.
 
 ```{r generate_table1}
-library("table1")
-
 table1(
   ~ age +
     blood_pressure +
@@ -137,14 +137,9 @@ table1(
 
 ## Age distribution
 
-Individuals in the dataset include people from 2 to 90 years old. Table1 shows the median, but we can also plot the age distribution for a better overview. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are only represented by diagnosed individuals
-
+Individuals in the dataset include people from 2 to 90 years old. Table1 shows the median, however, we can also visualise the age distribution for a better overview. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are represented only by diagnosed individuals.
 
 ```{r count_people_in_age_group}
-kidney_merged_GFR |> 
-  group_by(age_group) |> 
-  summarise(count = n()) 
-
 kidney_filter <- kidney_merged_GFR |>  
   drop_na(age_group) 
 
@@ -186,7 +181,7 @@ kidney_merged_GFR |>
                                hjust = 1)
   ) + 
   labs(
-    title = "Chronic Kidney Disease (CKD) stage distribution.",
+    title = "Chronic Kidney Disease stage distribution.",
     x = NULL
   ) +
   scale_x_discrete(labels = stage_labs)
@@ -194,3 +189,28 @@ kidney_merged_GFR |>
 ```
 
 We see that most of those without CDK fall within normal to mild, which is to be expected. Among individuals with CDK, most have advanced stages of moderate or more, with over 60 falling within the kidney failure category.
+
+```{r heatmap}
+kidney_summary <- kidney_merged_GFR |>
+  subset(!is.na(cdk_stage)) |>
+  group_by(cdk_stage, classification) |>
+  summarise(count = n(), .groups = "drop")
+
+ggplot(kidney_summary, aes(x = cdk_stage, y = classification, fill = count)) +
+  geom_tile(color = "white") +  
+  scale_fill_gradient(low = "white", high = "orange") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  labs(
+    title = "CKD Stage Distribution",
+    x = NULL,
+    y = "Classification",
+    fill = "Count"
+  ) +
+  scale_x_discrete(labels = stage_labs)
+
+
+
+```
