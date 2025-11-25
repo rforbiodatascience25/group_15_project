@@ -14,7 +14,68 @@ execute:
 
 ```{r load library and data}
 library(tidyverse)
+library(gt)
 kidney_merged_GFR <- read.csv("../data/03_data_augment.csv")
+```
+
+## General information
+
+This data was gathered during a 2-month period in India, following individuals with or without Chronic Kidney Disease. This is the main classification; in addition, the dataset registers 25 other features (e.g. cell count, appetite, hemoglobin) while placing individuals in correct age groups, the information about sex is missing.
+
+Overview of the variables can be found here:
+
+```{r}
+ckd_overview <- tribble(
+  ~Variable, ~Description, ~Type, ~Units,
+  "age", "Patient age", "Numeric", "years",
+  "blood_pressure", "Measured blood pressure", "Numeric", "mm/Hg",
+  "blood_glucose_random", "Blood glucose (random)", "Numeric", "mg/dL",
+  "blood_urea", "Urea concentration in blood", "Numeric", "mg/dL",
+  "serum_creatinine", "Creatinine in blood", "Numeric", "mg/dL",
+  "sodium", "Blood Sodium level", "Numeric", "mEq/L",
+  "potassium", "Blood Potassium level", "Numeric", "mEq/L",
+  "hemoglobin", "Hemoglobin level", "Numeric", "g/dL",
+  "packed_cell_volume", "Percentage of RBC volume", "Numeric", "%",
+  "white_blood_cell_count", "White blood cell count", "Numeric", "cells/cumm",
+  "red_blood_cell_count", "Red blood cell count", "Numeric", "millions/cmm",
+  "GFR_x", "Glomerular Filtration Rate", "Numeric", "ml/minute",
+
+  "age_group", "Age group", "Categorical", "9 age groups",
+  "specific_gravity", "Urine concentration level", "Categorical", "{1.005–1.025}",
+  "albumin", "Albumin level in urine", "Categorical (ordinal)", "0–5 scale",
+  "sugar", "Sugar level in urine", "Categorical (ordinal)", "0–5 scale",
+  "red_blood_cells", "Red blood cells in urine", "Categorical", "normal / abnormal",
+  "pus_cells", "Pus cells presence in urine", "Categorical", "normal / abnormal",
+  "pus_cell_clumps", "Pus cell clumps", "Categorical", "present / notpresent",
+  "bacteria", "Bacterial presence in urine", "Categorical", "present / notpresent",
+  "hypertension", "Hypertension status", "Categorical", "yes / no",
+  "diabetes_mellitus", "Diabetes status", "Categorical", "yes / no",
+  "coronary_artery_disease", "Coronary artery disease status", "Categorical", "yes / no",
+  "appetite", "Reported appetite", "Categorical", "good / poor",
+  "pedal_edema", "Swelling in legs/feet", "Categorical", "yes / no",
+  "anemia", "Anemia status", "Categorical", "yes / no",
+  "classification", "CKD diagnosis", "Categorical", "ckd / notckd",
+  "ckd_stage", "Stage of CKD", "Categorical", "1–5 scale"
+)
+
+ckd_overview %>%
+  arrange(Type) %>% 
+  gt(groupname_col = "Type") %>%
+  tab_options(
+    table.width = pct(100),
+    row_group.as_column = TRUE
+  ) %>%
+  tab_header(
+    title = "Chronic Kidney Disease Dataset: Variable Overview"
+  )
+
+
+```
+
+After the addition of classification in the previous step, the final dataset has 400 observations and a total of 31 variables.
+
+```{r get_nRC}
+dim(kidney_merged_GFR)
 ```
 
 ## Inspecting NA values
@@ -32,11 +93,16 @@ nas |>
   mean() 
 ```
 
-The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%.
+The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%. We decided not to delete all rows with missing values, as this would result in a drop of observations from 400 to 158. Therefore, we will handle them individually in the analysis.
+
+```{r}
+nrow(kidney_merged_GFR)
+nrow(kidney_merged_GFR %>% drop_na())
+```
 
 ## Age distribution
 
-Individuals in the dataset include people from 0 to 90 years old. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are only represented by diagnosed individuals
+Individuals in the dataset include people from 0 to 90 years old. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are represented only by diagnosed individuals
 
 ```{r count_people_in_age_group}
 kidney_merged_GFR |> 
