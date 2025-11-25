@@ -78,3 +78,98 @@ labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
 ```
 
 ## Question 2: How are CKD stages distributed between diagnosed and non-diagnosed individuals?
+
+Here we look at how the GFR-based CKD stages are distributed in people with and without a CKD diagnosis.
+
+```{r}
+kidney_analysis |>
+drop_na(cdk_stage, classification) |>
+count(cdk_stage, classification) |>
+group_by(classification) |>
+mutate(prop = n / sum(n))
+
+```
+
+```{r}
+kidney_analysis |>
+drop_na(cdk_stage, classification) |>
+ggplot(aes(x = cdk_stage, fill = classification)) +
+geom_bar(position = "fill") +
+theme_minimal() +
+labs(
+title = "Distribution of GFR-based CKD stages by classification",
+x = "CKD stage (based on GFR)",
+y = "Proportion within classification group"
+) +
+scale_y_continuous(labels = scales::percent_format()) +
+scale_fill_manual(
+values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+)
+
+```
+
+## Question 3: Are hypertension and diabetes more common among CKD patients?
+
+Hypertension and diabetes are known risk factors for CKD.
+Here we compare their prevalence between groups.
+
+```{r}
+kidney_analysis |>
+drop_na(hypertension, classification) |>
+count(classification, hypertension) |>
+group_by(classification) |>
+mutate(prop = n / sum(n))
+
+```
+
+Visualization
+
+```{r}
+kidney_analysis |>
+drop_na(hypertension, classification) |>
+  ggplot(aes(x = hypertension, fill = classification)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    title = "Hypertension by CKD classification",
+    x = "Hypertension",
+    y = "Proportion within hypertension group"
+    ) +
+scale_y_continuous(labels = scales::percent_format()) +
+scale_fill_manual(
+  values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+  labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+)
+
+```
+
+## Diabetes vs Classification
+
+```{r}
+kidney_analysis |>
+drop_na(diabetes_mellitus, classification) |>
+count(classification, diabetes_mellitus) |>
+group_by(classification) |>
+mutate(prop = n / sum(n))
+
+```
+
+```{r}
+kidney_analysis |>
+  drop_na(diabetes_mellitus, classification) |>
+  ggplot(aes(x = diabetes_mellitus, fill = classification)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  labs(
+    title = "Diabetes mellitus by CKD classification",
+    x = "Diabetes mellitus",
+    y = "Proportion within diabetes group"
+) +
+scale_y_continuous(labels = scales::percent_format()) +
+scale_fill_manual(
+  values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+  labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+)
+
+```
