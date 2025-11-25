@@ -14,7 +14,7 @@ execute:
 
 ```{r load library and data}
 library(tidyverse)
-kidney_merged_GFR <- read.csv("../data/03_data_augment.csv")
+kidney_merged_GFR <- read_csv("../data/07_kidney_merged_GFR.csv")
 ```
 
 ## Treating NA values
@@ -24,7 +24,7 @@ The missing values are going to be handled in separate analysis individually. Th
 ```{r calculate NAs %}
 
 nas<-kidney_merged_GFR %>% 
-     summarise(across(everything(), ~mean(is.na(.)) * 100))
+     dplyr::summarise(across(everything(), ~mean(is.na(.)) * 100))
 view(nas)
 nas %>% 
   select(-red_blood_cells, -id) %>% 
