@@ -15,7 +15,7 @@ execute:
 ```{r}
 library(tidyverse)
 
-kidney_merged_GFR <- read_rds("../data/03_data_augment.rds")
+kidney_merged_GFR <- read_csv("../data/03_data_augment.csv")
 
 ```
 
@@ -26,18 +26,18 @@ Here we make sure that the key categorical variables are treated as factors and 
 ```{r}
 kidney_analysis <- kidney_merged_GFR |>
 mutate(
-  classification = as.factor(classification),
-  hypertension = as.factor(hypertension),
-  diabetes_mellitus = as.factor(diabetes_mellitus),
-  coronary_artery_disease = as.factor(coronary_artery_disease),
-  anemia = as.factor(anemia),
-  pedal_edema = as.factor(pedal_edema),
-  cdk_stage = factor(
-    cdk_stage,
-    levels = c("stage_1", "stage_2", "stage_3a", "stage_3b", "stage_4", "stage_5"),
-    ordered = TRUE
-    )
-  )
+classification = as.factor(classification),
+hypertension = as.factor(hypertension),
+diabetes_mellitus = as.factor(diabetes_mellitus),
+coronary_artery_disease = as.factor(coronary_artery_disease),
+anemia = as.factor(anemia),
+pedal_edema = as.factor(pedal_edema),
+cdk_stage = factor(
+cdk_stage,
+levels = c("stage_1", "stage_2", "stage_3a", "stage_3b", "stage_4", "stage_5"),
+ordered = TRUE
+)
+)
 ```
 
 ## Question 1: Is kidney function (GFR) lower in CKD patients?
@@ -46,14 +46,14 @@ We expect individuals with a CKD diagnosis to have lower estimated glomerular fi
 
 ```{r}
 kidney_analysis |>
-  drop_na(GFR_average, classification) |>
-  group_by(classification) |>
-  summarise(
-    n = n(),
-    mean_GFR = mean(GFR_average),
-    median_GFR = median(GFR_average),
-    sd_GFR = sd(GFR_average)
-    )
+drop_na(GFR_average, classification) |>
+group_by(classification) |>
+summarise(
+n = n(),
+mean_GFR = mean(GFR_average),
+median_GFR = median(GFR_average),
+sd_GFR = sd(GFR_average)
+)
 
 ```
 
@@ -61,19 +61,19 @@ Visualize GFR by CKD classification
 
 ```{r}
 kidney_analysis |>
-  drop_na(GFR_average, classification) |>
-  ggplot(aes(x = classification, y = GFR_average, fill = classification)) +
-  geom_boxplot() +
-  theme_minimal() +
-  labs(
-    title = "Estimated GFR by CKD classification",
-    x = "Classification",
-    y = "Estimated GFR (ml/min)"
-    ) +
-  scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-    )
+drop_na(GFR_average, classification) |>
+ggplot(aes(x = classification, y = GFR_average, fill = classification)) +
+geom_boxplot() +
+theme_minimal() +
+labs(
+title = "Estimated GFR by CKD classification",
+x = "Classification",
+y = "Estimated GFR (ml/min)"
+) +
+scale_fill_manual(
+values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+)
 
 ```
 
@@ -83,42 +83,43 @@ Here we look at how the GFR-based CKD stages are distributed in people with and 
 
 ```{r}
 kidney_analysis |>
-  drop_na(cdk_stage, classification) |>
-  count(cdk_stage, classification) |>
-  group_by(classification) |>
-  mutate(prop = n / sum(n))
+drop_na(cdk_stage, classification) |>
+count(cdk_stage, classification) |>
+group_by(classification) |>
+mutate(prop = n / sum(n))
 
 ```
 
 ```{r}
 kidney_analysis |>
-  drop_na(cdk_stage, classification) |>
-  ggplot(aes(x = cdk_stage, fill = classification)) +
-  geom_bar(position = "fill") +
-  theme_minimal() +
-  labs(
-    title = "Distribution of GFR-based CKD stages by classification",
-    x = "CKD stage (based on GFR)",
-    y = "Proportion within classification group"
-    ) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-    )
+drop_na(cdk_stage, classification) |>
+ggplot(aes(x = cdk_stage, fill = classification)) +
+geom_bar(position = "fill") +
+theme_minimal() +
+labs(
+title = "Distribution of GFR-based CKD stages by classification",
+x = "CKD stage (based on GFR)",
+y = "Proportion within classification group"
+) +
+scale_y_continuous(labels = scales::percent_format()) +
+scale_fill_manual(
+values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+)
 
 ```
 
 ## Question 3: Are hypertension and diabetes more common among CKD patients?
 
-Hypertension and diabetes are known risk factors for CKD. Here we compare their prevalence between groups.
+Hypertension and diabetes are known risk factors for CKD.
+Here we compare their prevalence between groups.
 
 ```{r}
 kidney_analysis |>
-  drop_na(hypertension, classification) |>
-  count(classification, hypertension) |>
-  group_by(classification) |>
-  mutate(prop = n / sum(n))
+drop_na(hypertension, classification) |>
+count(classification, hypertension) |>
+group_by(classification) |>
+mutate(prop = n / sum(n))
 
 ```
 
@@ -126,19 +127,20 @@ Visualization
 
 ```{r}
 kidney_analysis |>
-  drop_na(hypertension, classification) |>
+drop_na(hypertension, classification) |>
   ggplot(aes(x = hypertension, fill = classification)) +
-  geom_bar(position = "dodge") +   
+  geom_bar(position = "fill") +
   theme_minimal() +
   labs(
     title = "Hypertension by CKD classification",
     x = "Hypertension",
-    y = "Number of people"
-  ) +
-  scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-  )
+    y = "Proportion within hypertension group"
+    ) +
+scale_y_continuous(labels = scales::percent_format()) +
+scale_fill_manual(
+  values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+  labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+)
 
 ```
 
@@ -146,10 +148,10 @@ kidney_analysis |>
 
 ```{r}
 kidney_analysis |>
-  drop_na(diabetes_mellitus, classification) |>
-  count(classification, diabetes_mellitus) |>
-  group_by(classification) |>
-  mutate(prop = n / sum(n))
+drop_na(diabetes_mellitus, classification) |>
+count(classification, diabetes_mellitus) |>
+group_by(classification) |>
+mutate(prop = n / sum(n))
 
 ```
 
@@ -157,17 +159,17 @@ kidney_analysis |>
 kidney_analysis |>
   drop_na(diabetes_mellitus, classification) |>
   ggplot(aes(x = diabetes_mellitus, fill = classification)) +
-  geom_bar(position = "dodge") +   # <-- side by side count comparison
+  geom_bar(position = "fill") +
   theme_minimal() +
   labs(
     title = "Diabetes mellitus by CKD classification",
     x = "Diabetes mellitus",
-    y = "Number of people"
-  ) +
-  scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-  )
-
+    y = "Proportion within diabetes group"
+) +
+scale_y_continuous(labels = scales::percent_format()) +
+scale_fill_manual(
+  values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+  labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+)
 
 ```
