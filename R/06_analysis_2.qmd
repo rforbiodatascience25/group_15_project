@@ -34,11 +34,13 @@ Using random forest we are inspecting the variable importance, to further select
 library(randomForest)
 library(caret)
 
+set.seed(123)
+
 kidney_augmented <- read_rds("../data/03_data_augment.rds")
 
 data <- kidney_augmented |> 
   na.omit() |>
-  select(-c(GFR_female, GFR_male, GFR_average))
+  select(-c(GFR_female, GFR_male, GFR_average, cdk_stage, specific_gravity))
 
 idx <- data$classification |>
   createDataPartition(p = 0.6, list = F)
@@ -46,10 +48,10 @@ idx <- data$classification |>
 train <- data[idx,]
 test <- data[-idx,]
 
-rf <- train |> 
+rf1 <- train |> 
   randomForest(classification ~ ., data = _, importance = T, ntree = 600)
 
-plot(rf$err.rate[,1], type='l')
+plot(rf1$err.rate[,1], type='l')
 ```
 
 ### Visualizing the confusion matrix
@@ -57,7 +59,7 @@ plot(rf$err.rate[,1], type='l')
 This is used to see the model performance on the test set.
 
 ```{r}
-pred <- predict(rf,test)
+pred <- predict(rf1,test)
 confusionMatrix(pred,test$classification)
 ```
 
@@ -66,7 +68,41 @@ confusionMatrix(pred,test$classification)
 This plot is used to see how much each variable is influencing the accuracy of the model.
 
 ```{r}
-varImpPlot(rf)
+varImpPlot(rf1)
+```
+
+### Repeating random forest analysis with important variables
+
+```{r}
+kidney_augmented <- read_rds("../data/03_data_augment.rds")
+
+data <- kidney_augmented |> 
+  na.omit() |>
+  select(-c(GFR_female, GFR_male, GFR_average, cdk_stage, specific_gravity))
+
+idx <- data$classification |>
+  createDataPartition(p = 0.6, list = F)
+
+train <- data[idx,]
+test <- data[-idx,]
+
+rf2 <- train |> 
+  randomForest(classification ~ packed_cell_volume + hemoglobin + 
+                 serum_creatinine + red_blood_cell_count + albumin + hypertension + diabetes_mellitus,
+               data = _, 
+               importance = T, 
+               ntree = 600)
+
+plot(rf2$err.rate[,1], type='l')
+```
+
+```{r}
+pred <- predict(rf2,test)
+confusionMatrix(pred,test$classification)
+```
+
+```{r}
+varImpPlot(rf2)
 ```
 
 ## Joel
