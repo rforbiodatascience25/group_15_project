@@ -5,4 +5,29 @@ format: html
 
 ## Giosuè
 
+```{r}
+library("PerformanceAnalytics")
+
+kidney_augmented <- read_rds("../data/03_data_augment.rds")
+
+kidney_augmented |>
+  select(age, blood_pressure, specific_gravity, albumin, blood_glucose_random, blood_urea, serum_creatinine, sodium, potassium, hemoglobin, packed_cell_volume, white_blood_cell_count, red_blood_cell_count) |>
+  chart.Correlation(histogram = TRUE, pch = 19)
+```
+
+```{r}
+library(randomForest)
+library(caret)
+
+idx <- kidney_augmented$classification |>
+  createDataPartition(p = 0.7, list = F)
+
+train <- kidney_augmented[idx,]
+test <- kidney_augmented[-idx,]
+
+summary(train)
+rf <- train |> 
+  randomForest()
+```
+
 ## Joel

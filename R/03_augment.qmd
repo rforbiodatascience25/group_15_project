@@ -29,7 +29,7 @@ library(tidyverse)
 ## Loading clean data
 
 ```{r}
-kidney_clean <- read_csv("../data/02_data_clean.csv")
+kidney_clean <- read_rds("../data/02_data_clean.rds")
 ```
 
 Here, we modify the cleaned dataset to prepare it for analysis. As a first step, we simply categorize the ages into age groups by intervals of 10, and re-order the data such that the new `age_group` column is after `age` for improved structure.
@@ -169,6 +169,6 @@ We see that most fall within stage 1 (normal) or stage 2 (mild). This confirms t
 ## Saving augmented data
 
 ```{r}
-write_csv(kidney_merged_GFR,
-          "../data/03_data_augment.csv")
+write_rds(kidney_merged_GFR,
+          "../data/03_data_augment.rds")
 ```
