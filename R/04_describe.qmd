@@ -23,8 +23,14 @@ kidney_merged_GFR <- read_csv("../data/03_data_augment.csv")
 The missing values are going to be handled in separate analysis individually. The percentage of NAs in each column is summarized here:
 
 ```{r calculate NAs %}
+<<<<<<< HEAD
 nas <- kidney_merged_GFR |> 
      summarise(across(everything(), ~mean(is.na(.)) * 100))
+=======
+
+nas<-kidney_merged_GFR %>% 
+     dplyr::summarise(across(everything(), ~mean(is.na(.)) * 100))
+>>>>>>> 19357e743ba2047c14521ab48870583a7234dd14
 view(nas)
 
 nas |> 
