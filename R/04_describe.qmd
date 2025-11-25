@@ -164,6 +164,14 @@ We categorized CKD into stages based on the blood filtration efficiency. The plo
 As expected, we see that most of the individuals not diagnosed with CDK fall within the Normal to Mild category. On the contrary, among individuals with CDK, the majority of individuals belong to advanced stages of the disease, with GFR from 30 to 40, and over 60 people suffer from kidney failure.
 
 ```{r heatmap}
+
+stage_labs <- c("Normal", 
+                "Mild", 
+                "Mild to moderate", 
+                "Moderate to severe",
+                "Severe", 
+                "Failure")
+
 kidney_heatmap <- kidney_merged_GFR  %>% 
   subset(!is.na(cdk_stage))  %>% 
   group_by(cdk_stage, classification) %>% 
