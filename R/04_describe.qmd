@@ -10,13 +10,16 @@ execute:
   warning: false
 ---
 
-## Load data
+## Load libraries and data
 
-```{r load library and data}
+```{r load_libraries}
 library(tidyverse)
 library(gt)
 library("table1")
 
+```
+
+```{r load_data}
 kidney_merged_GFR <- read_rds("../data/03_data_augment.rds")
 ```
 
@@ -26,7 +29,7 @@ This data was gathered during a 2-month period in India, following individuals w
 
 Overview of the variables can be found here:
 
-```{r}
+```{r variable_table}
 ckd_overview <- tribble(
   ~Variable, ~Description, ~Type, ~Units,
   "age", "Patient age", "Numeric", "years",
@@ -97,7 +100,7 @@ nas |>
 
 The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%. We decided not to delete all rows with missing values, as this would result in a drop of observations from 400 to 158. Therefore, we will handle them individually in the analysis.
 
-```{r}
+```{r get_rows}
 nrow(kidney_merged_GFR)
 nrow(kidney_merged_GFR %>% drop_na())
 ```
@@ -156,7 +159,7 @@ ggplot(kidney_filter, aes(age_group, fill = classification)) +
 
 ## CDK stage distribution
 
-CDK stage is missing from the table 1, but it would be interesting to see.
+We categorized CKD into stages based on the blood filtration efficiency. The plot above shows how many individuals are in which stage - Normal, Mild, Mild to Moderate, Moderate to Severe, Severe or Failure - the last one often requiring dialysis or transplant.
 
 ```{r CDK_stage_distribution}
 stage_labs <- c("Normal", 
@@ -188,27 +191,25 @@ kidney_merged_GFR |>
 
 ```
 
-We see that most of those without CDK fall within normal to mild, which is to be expected. Among individuals with CDK, most have advanced stages of moderate or more, with over 60 falling within the kidney failure category.
+As expected, we see that most of the individuals not diagnosed with CDK fall within the Normal to Mild category. On the contrary, among individuals with CDK, the majority of individuals belong to advanced stages of the disease, with GFR from 30 to 40, and over 60 people suffer from kidney failure.
 
 ```{r heatmap}
-kidney_summary <- kidney_merged_GFR |>
-  subset(!is.na(cdk_stage)) |>
-  group_by(cdk_stage, classification) |>
+kidney_heatmap <- kidney_merged_GFR  %>% 
+  subset(!is.na(cdk_stage))  %>% 
+  group_by(cdk_stage, classification) %>% 
   summarise(count = n(), .groups = "drop")
 
-ggplot(kidney_summary, aes(x = cdk_stage, y = classification, fill = count)) +
+ggplot(kidney_heatmap, aes(x = cdk_stage, y = classification, fill = count)) +
   geom_tile(color = "white") +  
+  geom_text(aes(label = count), color = "darkgrey") +
   scale_fill_gradient(low = "white", high = "orange") +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  ) +
-  labs(
-    title = "CKD Stage Distribution",
+    axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "CKD Stage Distribution",
     x = NULL,
     y = "Classification",
-    fill = "Count"
-  ) +
+    fill = "Count") +
   scale_x_discrete(labels = stage_labs)
 
 
