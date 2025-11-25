@@ -1,5 +1,80 @@
 ---
 title: "05_analysis_1"
-format: html
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
 
+## Loading the data
+
+```{r}
+library(tidyverse)
+
+kidney_merged_GFR <- read_csv("../data/03_data_augment.csv")
+
+```
+
+## Prepare variables for Analysis
+
+Here we make sure that the key categorical variables are treated as factors and that the CKD stages have an ordered structure.
+
+```{r}
+kidney_analysis <- kidney_merged_GFR |>
+mutate(
+classification = as.factor(classification),
+hypertension = as.factor(hypertension),
+diabetes_mellitus = as.factor(diabetes_mellitus),
+coronary_artery_disease = as.factor(coronary_artery_disease),
+anemia = as.factor(anemia),
+pedal_edema = as.factor(pedal_edema),
+cdk_stage = factor(
+cdk_stage,
+levels = c("stage_1", "stage_2", "stage_3a", "stage_3b", "stage_4", "stage_5"),
+ordered = TRUE
+)
+)
+```
+
+## Question 1: Is kidney function (GFR) lower in CKD patients?
+
+We expect individuals with a CKD diagnosis to have lower estimated glomerular filtration rate (GFR).
+
+```{r}
+kidney_analysis |>
+drop_na(GFR_average, classification) |>
+group_by(classification) |>
+summarise(
+n = n(),
+mean_GFR = mean(GFR_average),
+median_GFR = median(GFR_average),
+sd_GFR = sd(GFR_average)
+)
+
+```
+
+Visualize GFR by CKD classification
+
+```{r}
+kidney_analysis |>
+drop_na(GFR_average, classification) |>
+ggplot(aes(x = classification, y = GFR_average, fill = classification)) +
+geom_boxplot() +
+theme_minimal() +
+labs(
+title = "Estimated GFR by CKD classification",
+x = "Classification",
+y = "Estimated GFR (ml/min)"
+) +
+scale_fill_manual(
+values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+)
+
+```
+
+## Question 2: How are CKD stages distributed between diagnosed and non-diagnosed individuals?
