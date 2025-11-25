@@ -15,7 +15,7 @@ execute:
 ```{r}
 library(tidyverse)
 
-kidney_merged_GFR <- read_csv("../data/03_data_augment.csv")
+kidney_merged_GFR <- read_rds("../data/03_data_augment.rds")
 
 ```
 
@@ -111,8 +111,7 @@ labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
 
 ## Question 3: Are hypertension and diabetes more common among CKD patients?
 
-Hypertension and diabetes are known risk factors for CKD.
-Here we compare their prevalence between groups.
+Hypertension and diabetes are known risk factors for CKD. Here we compare their prevalence between groups.
 
 ```{r}
 kidney_analysis |>

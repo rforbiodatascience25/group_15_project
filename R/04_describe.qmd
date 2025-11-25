@@ -14,7 +14,7 @@ execute:
 
 ```{r load library and data}
 library(tidyverse)
-kidney_merged_GFR <- read.csv("../data/03_data_augment.csv")
+kidney_merged_GFR <- read_rds("../data/03_data_augment.rds")
 ```
 
 ## Inspecting NA values
