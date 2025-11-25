@@ -177,48 +177,60 @@ kidney_analysis |>
     )
 ```
 
+## Final Plot 
+
+Setting the data to long format
+
 ```{r}
-kidney_analysis <- read_rds("../data/04_data_analysis.rds")
-# 1) Pivot to long format for the key continuous predictors
-kidney_analysis2 <- kidney_analysis |>
-  select(classification,
-         albumin,
-         serum_creatinine,
-         hemoglobin,
-         packed_cell_volume,
-         red_blood_cell_count) |>
+kidney_long <- kidney_analysis |>
+  select(
+    classification,
+    albumin,
+    serum_creatinine,
+    hemoglobin,
+    packed_cell_volume,
+    red_blood_cell_count
+  ) |>
   pivot_longer(
     cols = -classification,
     names_to = "variable",
     values_to = "value"
   ) |>
-  drop_na(value)   
+  drop_na(value)
 
-# 2) Get per-variable y-limits so we can place n above all boxplots
-ylims <- kidney_analysis2 |>
+```
+
+Adjusting for label positions
+
+```{r}
+label_pos <- kidney_long |>
   group_by(variable) |>
   summarise(
-    top = max(value, na.rm = TRUE),
+    y_pos = max(value, na.rm = TRUE) * 1.15,
     .groups = "drop"
-  ) |>
-  mutate(y_pos = top + (top * 0.15))   
+  )
+```
 
-# 3) Compute n per variable *and* classification, then join y_pos
-n_labels <- kidney_analysis2 |>
-  group_by(variable, classification) |>
-  summarise(
-    n = n(),               
-    .groups = "drop"
-  ) |>
-  left_join(ylims, by = "variable")
+Count observations per group and join label positions
 
-# 4) Faceted boxplot with n labels for CKD and non-CKD in each facet
-ggplot(kidney_analysis2,
-       aes(x = classification, y = value, fill = classification)) +
+```{r}
+n_labels <- kidney_long |>
+  count(variable, classification, name = "n") |>
+  left_join(label_pos, by = "variable")
+
+```
+
+Final Plot visualization
+
+```{r}
+ggplot(
+  kidney_long,
+  aes(x = classification, y = value, fill = classification)
+) +
   geom_boxplot() +
   geom_text(
     data = n_labels,
-    aes(x = classification, y = y_pos, label = paste0("n = ", n)),
+    aes(y = y_pos, label = paste0("n = ", n)),
     size = 3
   ) +
   facet_wrap(
