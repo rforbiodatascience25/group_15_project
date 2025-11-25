@@ -106,3 +106,74 @@ varImpPlot(rf2)
 ```
 
 ## Joel
+
+## New code 
+
+```{r}
+# 1) Pivot to long format for the key continuous predictors
+kidney_analysis2 <- kidney_analysis |>
+  select(classification,
+         albumin,
+         serum_creatinine,
+         hemoglobin,
+         packed_cell_volume,
+         red_blood_cell_count) |>
+  pivot_longer(
+    cols = -classification,
+    names_to = "variable",
+    values_to = "value"
+  ) |>
+  drop_na(value)   
+
+# 2) Get per-variable y-limits so we can place n above all boxplots
+ylims <- kidney_analysis2 |>
+  group_by(variable) |>
+  summarise(
+    top = max(value, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(y_pos = top + (top * 0.15))   
+
+# 3) Compute n per variable *and* classification, then join y_pos
+n_labels <- kidney_analysis2 |>
+  group_by(variable, classification) |>
+  summarise(
+    n = n(),               
+    .groups = "drop"
+  ) |>
+  left_join(ylims, by = "variable")
+
+# 4) Faceted boxplot with n labels for CKD and non-CKD in each facet
+ggplot(kidney_analysis2,
+       aes(x = classification, y = value, fill = classification)) +
+  geom_boxplot() +
+  geom_text(
+    data = n_labels,
+    aes(x = classification, y = y_pos, label = paste0("n = ", n)),
+    size = 3
+  ) +
+  facet_wrap(
+    ~ variable,
+    scales = "free_y",
+    labeller = as_labeller(
+      c(
+        albumin = "Albumin (score)",
+        hemoglobin = "Hemoglobin (g/dL)",
+        packed_cell_volume = "PCV (%)",
+        red_blood_cell_count = "RBC count (millions/mcL)",
+        serum_creatinine = "Creatinine (mg/dL)"
+      )
+    )
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Key continuous predictors by CKD classification",
+    x = "Classification",
+    y = "Value"
+  ) +
+  scale_fill_manual(
+    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
+    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
+  )
+
+```
