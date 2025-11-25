@@ -3,8 +3,6 @@ title: "05_analysis_1"
 format:
   html:
     embed-resources: true
-    output-file: 05_analysis_1.html
-    output-dir: results
 editor: visual
 execute: 
   echo: true
@@ -40,6 +38,9 @@ mutate(
     ordered = TRUE
     )
   )
+
+kidney_analysis |>
+  write_rds("../data/04_data_analysis.rds")
 ```
 
 ## Question 1: Is kidney function (GFR) lower in CKD patients?
@@ -67,23 +68,12 @@ kidney_analysis |>
   ggplot(aes(x = classification, y = GFR_average, fill = classification)) +
   geom_boxplot() +
   theme_minimal() +
-<<<<<<< HEAD
-=======
   theme(legend.position="none") +
->>>>>>> 4a94c2d6425f07ecd82892108f68c0d82f1e4458
   labs(
     title = "Estimated GFR by CKD classification",
     x = "Classification",
-    y = "Estimated GFR (ml/min)"
-    ) +
-<<<<<<< HEAD
-  scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-    )
-=======
+    y = "Estimated GFR (ml/min)") +
   scale_x_discrete(labels = c("CKD diagnosis", "No CKD diagnosis"))
->>>>>>> 4a94c2d6425f07ecd82892108f68c0d82f1e4458
 
 ```
 
@@ -113,18 +103,6 @@ kidney_analysis |>
   ggplot(aes(x = cdk_stage, fill = classification)) +
   geom_bar(position = "fill") +
   theme_minimal() +
-<<<<<<< HEAD
-  labs(
-    title = "Distribution of GFR-based CKD stages by classification",
-    x = "CKD stage (based on GFR)",
-    y = "Proportion within classification group"
-    ) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-    )
-=======
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(
     title = "Distribution of GFR-based CKD stages by classification",
@@ -136,7 +114,6 @@ kidney_analysis |>
     labels = c("ckd" = "CKD diagnosis", "notckd" = "No CKD diagnosis")
     ) +
   scale_x_discrete(labels = stage_labs)
->>>>>>> 4a94c2d6425f07ecd82892108f68c0d82f1e4458
 
 ```
 
@@ -159,28 +136,17 @@ Visualization
 kidney_analysis |>
   drop_na(hypertension, classification) |>
   ggplot(aes(x = hypertension, fill = classification)) +
-<<<<<<< HEAD
-  geom_bar(position = "dodge") +   
-=======
   geom_bar(
     position = position_dodge(preserve = "single")) +   
->>>>>>> 4a94c2d6425f07ecd82892108f68c0d82f1e4458
   theme_minimal() +
   labs(
     title = "Hypertension by CKD classification",
     x = "Hypertension",
     y = "Number of people"
   ) +
-<<<<<<< HEAD
-  scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-  )
-=======
   scale_fill_discrete(
     labels = c("ckd" = "CKD diagnosis", "notckd" = "No CKD diagnosis")
     )
->>>>>>> 4a94c2d6425f07ecd82892108f68c0d82f1e4458
 
 ```
 
@@ -199,28 +165,14 @@ kidney_analysis |>
 kidney_analysis |>
   drop_na(diabetes_mellitus, classification) |>
   ggplot(aes(x = diabetes_mellitus, fill = classification)) +
-<<<<<<< HEAD
-  geom_bar(position = "dodge") +   # <-- side by side count comparison
-=======
-  geom_bar(
-    position = position_dodge(preserve = "single")) +
->>>>>>> 4a94c2d6425f07ecd82892108f68c0d82f1e4458
+  geom_bar(position = position_dodge(preserve = "single")) +
   theme_minimal() +
   labs(
     title = "Diabetes mellitus by CKD classification",
     x = "Diabetes mellitus",
     y = "Number of people"
   ) +
-<<<<<<< HEAD
-  scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-  )
-
-
-=======
   scale_fill_discrete(
     labels = c("ckd" = "CKD diagnosis", "notckd" = "No CKD diagnosis")
     )
->>>>>>> 4a94c2d6425f07ecd82892108f68c0d82f1e4458
 ```

@@ -3,8 +3,6 @@ title: "00_all"
 format:
   html:
     embed-resources: true
-    output-file: 00_all.html
-    output-dir: results
 editor: visual
 execute: 
   echo: true
@@ -21,7 +19,8 @@ packages <- c(
   "caret",
   "tidyverse",
   "quarto",
-  "here"
+  "here",
+  "gt"
   )
 
 for (pkg in packages) {
@@ -31,6 +30,10 @@ for (pkg in packages) {
 }
 ```
 
+## Render to HTML
+
+Renders and moves to the results folder all the Quarto files
+
 ```{r}
 library(quarto)
 library(here)
@@ -39,21 +42,24 @@ project_root <- here()
 results_dir <- here("results")
 if (!dir.exists(results_dir)) dir.create(results_dir)
 
-quarto_render(
-  input = here("R", "01_load.qmd"))
+qmd_files <- c(
+  "01_load.qmd", "02_clean.qmd", "03_augment.qmd",
+  "04_describe.qmd", "05_analysis_1.qmd", "06_analysis_2.qmd"
+  )
 
-quarto_render(
-  input = here("R", "02_clean.qmd"))
-
-quarto_render(
-  input = here("R", "03_augment.qmd"))
-
-quarto_render(
-  input = here("R", "04_describe.qmd"))
-
-quarto_render(
-  input = here("R", "05_analysis_1.qmd"))
-
-quarto_render(
-  input = here("R", "06_analysis_2.qmd"))
+for (file in qmd_files) {
+  qmd_path <- here("R", file)
+  
+  quarto_render(input = qmd_path)
+  
+  html_source <- here("R", sub("\\.qmd$", ".html", file))
+  html_dest <- here("results", sub("\\.qmd$", ".html", file))
+  
+  if (file.exists(html_source)) {
+    file.rename(from = html_source, to = html_dest)
+    message("Moved: ", basename(html_dest))
+  } else {
+    warning("File not found: ", html_source)
+  }
+}
 ```

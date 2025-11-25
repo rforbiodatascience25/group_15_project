@@ -3,8 +3,6 @@ title: "06_analysis_2"
 format:
   html:
     embed-resources: true
-    output-file: 06_analysis_2.html
-    output-dir: results
 editor: visual
 execute: 
   echo: true
@@ -34,8 +32,8 @@ kidney_augmented |>
 Using random forest we are inspecting the variable importance, to further select our variables. This also includes factor variables.
 
 ```{r}
-library(randomForest)
-library(caret)
+library("randomForest")
+library("caret")
 
 set.seed(123)
 
@@ -113,6 +111,7 @@ varImpPlot(rf2)
 ## New code
 
 ```{r}
+kidney_analysis <- read_rds("../data/04_data_analysis.rds")
 # 1) Pivot to long format for the key continuous predictors
 kidney_analysis2 <- kidney_analysis |>
   select(classification,

@@ -3,8 +3,6 @@ title: "01_load"
 format:
   html:
     embed-resources: true
-    output-file: 01_load.html
-    output-dir: results
 editor: visual
 execute: 
   echo: true

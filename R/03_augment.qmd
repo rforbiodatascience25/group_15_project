@@ -3,8 +3,6 @@ title: "03_augment"
 format:
   html:
     embed-resources: true
-    output-file: 03_augment.html
-    output-dir: results
 editor: visual
 execute: 
   echo: true
@@ -25,7 +23,7 @@ execute:
 ## Create age groups
 
 ```{r load_packages}
-library(tidyverse)
+library("tidyverse")
 ```
 
 ## Loading clean data
