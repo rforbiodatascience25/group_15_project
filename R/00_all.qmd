@@ -40,26 +40,20 @@ results_dir <- here("results")
 if (!dir.exists(results_dir)) dir.create(results_dir)
 
 quarto_render(
-  input = here("R", "01_load.qmd"),
-  output_file = "01_load.html")
+  input = here("R", "01_load.qmd"))
 
 quarto_render(
-  input = here("R", "02_clean.qmd"),
-  output_file = "02_clean.html")
+  input = here("R", "02_clean.qmd"))
 
 quarto_render(
-  input = here("R", "03_augment.qmd"),
-  output_file = "03_augment.html")
+  input = here("R", "03_augment.qmd"))
 
 quarto_render(
-  input = here("R", "04_describe.qmd"),
-  output_file = "04_describe.html")
+  input = here("R", "04_describe.qmd"))
 
 quarto_render(
-  input = here("R", "05_analysis_1.qmd"),
-  output_file = "05_analysis_1.html")
+  input = here("R", "05_analysis_1.qmd"))
 
 quarto_render(
-  input = here("R", "06_analysis_2.qmd"),
-  output_file = "06_analysis_2.html")
+  input = here("R", "06_analysis_2.qmd"))
 ```

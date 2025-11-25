@@ -12,13 +12,78 @@ execute:
   warning: false
 ---
 
-## Load data
+## Load libraries and data
 
-```{r load library and data}
+```{r load_libraries}
 library(tidyverse)
+library(gt)
+library("table1")
+
+```
+
+```{r load_data}
 kidney_merged_GFR <- read_rds("../data/03_data_augment.rds")
 ```
 
+## General information
+
+This data was gathered during a 2-month period in India, following individuals with or without Chronic Kidney Disease. This is the main classification; in addition, the dataset registers 25 other features (e.g. cell count, appetite, hemoglobin) while placing individuals in correct age groups, the information about sex is missing.
+
+Overview of the variables can be found here:
+
+```{r variable_table}
+ckd_overview <- tribble(
+  ~Variable, ~Description, ~Type, ~Units,
+  "age", "Patient age", "Numeric", "years",
+  "blood_pressure", "Measured blood pressure", "Numeric", "mm/Hg",
+  "blood_glucose_random", "Blood glucose (random)", "Numeric", "mg/dL",
+  "blood_urea", "Urea concentration in blood", "Numeric", "mg/dL",
+  "serum_creatinine", "Creatinine in blood", "Numeric", "mg/dL",
+  "sodium", "Blood Sodium level", "Numeric", "mEq/L",
+  "potassium", "Blood Potassium level", "Numeric", "mEq/L",
+  "hemoglobin", "Hemoglobin level", "Numeric", "g/dL",
+  "packed_cell_volume", "Percentage of RBC volume", "Numeric", "%",
+  "white_blood_cell_count", "White blood cell count", "Numeric", "cells/cumm",
+  "red_blood_cell_count", "Red blood cell count", "Numeric", "millions/cmm",
+  "GFR_x", "Glomerular Filtration Rate", "Numeric", "ml/minute",
+
+  "age_group", "Age group", "Categorical", "9 age groups",
+  "specific_gravity", "Urine concentration level", "Categorical", "{1.005–1.025}",
+  "albumin", "Albumin level in urine", "Categorical (ordinal)", "0–5 scale",
+  "sugar", "Sugar level in urine", "Categorical (ordinal)", "0–5 scale",
+  "red_blood_cells", "Red blood cells in urine", "Categorical", "normal / abnormal",
+  "pus_cells", "Pus cells presence in urine", "Categorical", "normal / abnormal",
+  "pus_cell_clumps", "Pus cell clumps", "Categorical", "present / notpresent",
+  "bacteria", "Bacterial presence in urine", "Categorical", "present / notpresent",
+  "hypertension", "Hypertension status", "Categorical", "yes / no",
+  "diabetes_mellitus", "Diabetes status", "Categorical", "yes / no",
+  "coronary_artery_disease", "Coronary artery disease status", "Categorical", "yes / no",
+  "appetite", "Reported appetite", "Categorical", "good / poor",
+  "pedal_edema", "Swelling in legs/feet", "Categorical", "yes / no",
+  "anemia", "Anemia status", "Categorical", "yes / no",
+  "classification", "CKD diagnosis", "Categorical", "ckd / notckd",
+  "ckd_stage", "Stage of CKD", "Categorical", "1–5 scale"
+)
+
+ckd_overview %>%
+  arrange(Type) %>% 
+  gt(groupname_col = "Type") %>%
+  tab_options(
+    table.width = pct(100),
+    row_group.as_column = TRUE
+  ) %>%
+  tab_header(
+    title = "Chronic Kidney Disease Dataset: Variable Overview"
+  )
+
+
+```
+
+After the addition of classification in the previous step, the final dataset has 400 observations and a total of 31 variables.
+
+```{r get_nRC}
+dim(kidney_merged_GFR)
+```
 ## Inspecting NA values
 
 The percentage of NAs in each column is summarized here:
@@ -34,15 +99,19 @@ nas |>
   mean() 
 ```
 
-The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%.
+<<<<<<< HEAD
+The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%. We decided not to delete all rows with missing values, as this would result in a drop of observations from 400 to 158. Therefore, we will handle them individually in the analysis.
+
+```{r get_rows}
+nrow(kidney_merged_GFR)
+nrow(kidney_merged_GFR %>% drop_na())
+```
 
 ## Table 1
 
-We can create a table1 to give us a broad overview about the data. In doing this, we see that there are 250 individuals with chronic kidney disease, and 150 without. Among these, the mean age is 54.5 and 46.5 respectively.
+This table provides us with descriptive statistics of the main characteristics of the data stratified by classification (ckd/notckd). We see that there are 250 individuals diagnosed with chronic kidney disease, and 150 not diagnosed, with mean age 54.5 and 46.5 for the two groups respectively.
 
 ```{r generate_table1}
-library("table1")
-
 table1(
   ~ age +
     blood_pressure +
@@ -73,13 +142,11 @@ table1(
 
 ## Age distribution
 
-Individuals in the dataset include people from 2 to 90 years old. Table1 shows the median, but we can also plot the age distribution for a better overview. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are only represented by diagnosed individuals
+<<<<<<< HEAD
+Individuals in the dataset include people from 2 to 90 years old. Table1 shows the median, however, we can also visualise the age distribution for a better overview. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are represented only by diagnosed individuals.
+
 
 ```{r count_people_in_age_group}
-kidney_merged_GFR |> 
-  group_by(age_group) |> 
-  summarise(count = n()) 
-
 kidney_filter <- kidney_merged_GFR |>  
   drop_na(age_group) 
 
@@ -96,9 +163,12 @@ ggplot(kidney_filter, aes(age_group, fill = classification)) +
 
 ## CDK stage distribution
 
-CDK stage is missing from the table 1, but it would be interesting to see.
+We categorized CKD into stages based on the blood filtration efficiency. The plot above shows how many individuals are in which stage - Normal, Mild, Mild to Moderate, Moderate to Severe, Severe or Failure - the last one often requiring dialysis or transplant.
 
-```{r CDK_stage_distribution}
+As expected, we see that most of the individuals not diagnosed with CDK fall within the Normal to Mild category. On the contrary, among individuals with CDK, the majority of individuals belong to advanced stages of the disease, with GFR from 30 to 40, and over 60 people suffer from kidney failure.
+
+```{r heatmap}
+
 stage_labs <- c("Normal", 
                 "Mild", 
                 "Mild to moderate", 
@@ -106,26 +176,24 @@ stage_labs <- c("Normal",
                 "Severe", 
                 "Failure")
 
-kidney_merged_GFR |>
-  subset(!is.na(cdk_stage)) |> 
-  ggplot(
-    aes(cdk_stage, 
-        fill = classification)
-  ) +
-  geom_bar(
-    position = position_dodge(preserve = "single")
-    ) +
+kidney_heatmap <- kidney_merged_GFR  %>% 
+  subset(!is.na(cdk_stage))  %>% 
+  group_by(cdk_stage, classification) %>% 
+  summarise(count = n(), .groups = "drop")
+
+ggplot(kidney_heatmap, aes(x = cdk_stage, y = classification, fill = count)) +
+  geom_tile(color = "white") +  
+  geom_text(aes(label = count), color = "darkgrey") +
+  scale_fill_gradient(low = "white", high = "orange") +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45,
-                               hjust = 1)
-  ) + 
-  labs(
-    title = "Chronic Kidney Disease (CKD) stage distribution.",
-    x = NULL
-  ) +
+    axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "CKD Stage Distribution",
+    x = NULL,
+    y = "Classification",
+    fill = "Count") +
   scale_x_discrete(labels = stage_labs)
 
-```
 
-We see that most of those without CDK fall within normal to mild, which is to be expected. Among individuals with CDK, most have advanced stages of moderate or more, with over 60 falling within the kidney failure category.
+
+```
