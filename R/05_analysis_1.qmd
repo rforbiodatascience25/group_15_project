@@ -1,6 +1,13 @@
 ---
 title: "05_analysis_1"
-format: html
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
 
 # Content ideas
