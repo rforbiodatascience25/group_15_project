@@ -48,15 +48,11 @@ kidney_filter <- kidney_merged_GFR |>
 
 ggplot(kidney_filter, aes(age_group, fill = classification)) +
   geom_bar(
-    position = "dodge"
-      ) +
+    position = position_dodge(preserve = "single")) +
   theme_minimal() +
   labs(title="Age distribution",
   x = ("Age Group"),
   y = ("Count"),
-  fill = "Classification") +
-  scale_fill_manual(values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-                  labels(c("ckd" = "Diagnosed","notckd" = "Not Diagnosed")))
+  fill = "Classification") 
 
-  
 ```
