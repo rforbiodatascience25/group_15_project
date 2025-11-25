@@ -1,6 +1,13 @@
 ---
 title: "03_augment"
-format: html
+format:
+  html:
+    embed-resources: true
+editor: visual
+execute: 
+  echo: true
+  message: false
+  warning: false
 ---
 
 # Data augmentation
