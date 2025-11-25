@@ -3,6 +3,8 @@ title: "04_describe"
 format:
   html:
     embed-resources: true
+    output-file: 04_describe.html
+    output-dir: results
 editor: visual
 execute: 
   echo: true

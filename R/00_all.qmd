@@ -3,6 +3,8 @@ title: "00_all"
 format:
   html:
     embed-resources: true
+    output-file: 00_all.html
+    output-dir: results
 editor: visual
 execute: 
   echo: true
@@ -10,11 +12,54 @@ execute:
   warning: false
 ---
 
-## Install dependencies
+## Install dependencies if missing
 
 ```{r}
-install.packages("PerformanceAnalytics")
-install.packages("randomForest")
-install.packages("caret")
-install.packages("tidyverse")
+packages <- c(
+  "PerformanceAnalytics",
+  "randomForest",
+  "caret",
+  "tidyverse",
+  "quarto",
+  "here"
+  )
+
+for (pkg in packages) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+  }
+}
+```
+
+```{r}
+library(quarto)
+library(here)
+
+project_root <- here()
+results_dir <- here("results")
+if (!dir.exists(results_dir)) dir.create(results_dir)
+
+quarto_render(
+  input = here("R", "01_load.qmd"),
+  output_file = "01_load.html")
+
+quarto_render(
+  input = here("R", "02_clean.qmd"),
+  output_file = "02_clean.html")
+
+quarto_render(
+  input = here("R", "03_augment.qmd"),
+  output_file = "03_augment.html")
+
+quarto_render(
+  input = here("R", "04_describe.qmd"),
+  output_file = "04_describe.html")
+
+quarto_render(
+  input = here("R", "05_analysis_1.qmd"),
+  output_file = "05_analysis_1.html")
+
+quarto_render(
+  input = here("R", "06_analysis_2.qmd"),
+  output_file = "06_analysis_2.html")
 ```

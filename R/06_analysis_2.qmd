@@ -3,6 +3,8 @@ title: "06_analysis_2"
 format:
   html:
     embed-resources: true
+    output-file: 06_analysis_2.html
+    output-dir: results
 editor: visual
 execute: 
   echo: true
@@ -17,6 +19,7 @@ execute:
 The corr plot shows the correlation between all the numeric variables in the dataset, from there we can inspect if there is correlation between variables and how strong.
 
 ```{r}
+library("tidyverse")
 library("PerformanceAnalytics")
 
 kidney_augmented <- read_rds("../data/03_data_augment.rds")

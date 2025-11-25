@@ -3,6 +3,8 @@ title: "02_clean"
 format:
   html:
     embed-resources: true
+    output-file: 02_clean.html
+    output-dir: results
 editor: visual
 execute: 
   echo: true

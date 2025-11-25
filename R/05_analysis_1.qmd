@@ -3,6 +3,8 @@ title: "05_analysis_1"
 format:
   html:
     embed-resources: true
+    output-file: 05_analysis_1.html
+    output-dir: results
 editor: visual
 execute: 
   echo: true

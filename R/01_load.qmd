@@ -3,6 +3,8 @@ title: "01_load"
 format:
   html:
     embed-resources: true
+    output-file: 01_load.html
+    output-dir: results
 editor: visual
 execute: 
   echo: true
@@ -16,16 +18,16 @@ Checking if the data folder is there and if not, creates it and writes the loade
 
 ```{r}
 library(tidyverse)
+library(here)
+
+project_root <- here()
+data_dir <- here("data")
+if (!dir.exists(data_dir)) dir.create(data_dir)
+
+input_file <- here("_raw", "kidney_disease.csv")
+output_file <- here("data", "01_data_load.csv")
+
+read_csv(input_file) |> write_csv(output_file)
 
 
-data_dir <- "../data"
-
-if( !dir.exists(data_dir) ){
-  dir.create(path = data_dir)
-}
-
-
-"../_raw/kidney_disease.csv" |> 
-  read_csv() |>
-  write_csv("../data/01_data_load.csv")
 ```

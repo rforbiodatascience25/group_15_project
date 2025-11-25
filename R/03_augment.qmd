@@ -3,6 +3,8 @@ title: "03_augment"
 format:
   html:
     embed-resources: true
+    output-file: 03_augment.html
+    output-dir: results
 editor: visual
 execute: 
   echo: true
