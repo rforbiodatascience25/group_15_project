@@ -9,3 +9,10 @@ execute:
   message: false
   warning: false
 ---
+
+```{r}
+install.packages("PerformanceAnalytics")
+install.packages("randomForest")
+install.packages("caret")
+install.packages("tidyverse")
+```
