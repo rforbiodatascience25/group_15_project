@@ -14,25 +14,22 @@ execute:
 
 ```{r load library and data}
 library(tidyverse)
-
-kidney_merged_GFR <- read_csv("../data/03_data_augment.csv")
+kidney_merged_GFR <- read.csv("../data/03_data_augment.csv")
 ```
 
 ## Treating NA values
 
 The missing values are going to be handled in separate analysis individually. The percentage of NAs in each column is summarized here:
 
-```{r calculate NAs %}
+```{r calculate_NAs}
 
 nas <- kidney_merged_GFR |> 
      summarise(across(everything(), ~mean(is.na(.)) * 100))
 
-view(nas)
-
 nas |> 
-  select(-red_blood_cells, -id) |> 
+  select(-red_blood_cells) |> 
   unlist() |> 
-  mean()
+  mean() 
 ```
 
 The category with the most missing values is the classification of red blood cells, with 38% missing values. Apart from this category, the average of NAs is around 8%.
@@ -41,23 +38,25 @@ The category with the most missing values is the classification of red blood cel
 
 Individuals in the dataset include people from 0 to 90 years old. The most prevalent groups are people aged from 41 to 70 years old, the majority of which has been diagnosed with chronic kidney disease. The youngest and the oldest age groups are only represented by diagnosed individuals
 
-```{r count people in age group}
-kidney_merged_GFR |>
-  group_by(age_group) |>
+```{r count_people_in_age_group}
+kidney_merged_GFR |> 
+  group_by(age_group) |> 
   summarise(count = n()) 
 
-kidney_filter <- kidney_merged_GFR |> 
+kidney_filter <- kidney_merged_GFR |>  
   drop_na(age_group) 
 
 ggplot(kidney_filter, aes(age_group, fill = classification)) +
-  geom_bar() +
+  geom_bar(
+    position = "dodge"
+      ) +
   theme_minimal() +
   labs(title="Age distribution",
   x = ("Age Group"),
   y = ("Count"),
   fill = "Classification") +
   scale_fill_manual(values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-                    labels(c("ckd" = "Diagnosed","notckd" = "Not Diagnosed")))
+                  labels(c("ckd" = "Diagnosed","notckd" = "Not Diagnosed")))
 
   
 ```
