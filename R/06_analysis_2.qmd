@@ -209,13 +209,11 @@ kidney_long <- kidney_analysis |>
     serum_creatinine,
     hemoglobin,
     packed_cell_volume,
-    red_blood_cell_count
-  ) |>
+    red_blood_cell_count) |>
   pivot_longer(
     cols = -classification,
     names_to = "variable",
-    values_to = "value"
-  ) |>
+    values_to = "value") |>
   drop_na(value)
 
 ```
@@ -227,8 +225,7 @@ label_pos <- kidney_long |>
   group_by(variable) |>
   summarise(
     y_pos = max(value, na.rm = TRUE) * 1.15,
-    .groups = "drop"
-  )
+    .groups = "drop")
 ```
 
 Count observations per group and join label positions
@@ -248,8 +245,7 @@ Final Plot visualization
 
 ggplot(
   kidney_long,
-  aes(x = classification, y = value, fill = classification)
-) +
+  aes(x = classification, y = value, fill = classification)) +
   geom_boxplot() +
   geom_text(
     data = n_labels,
