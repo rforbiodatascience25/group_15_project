@@ -13,10 +13,9 @@ execute:
 ## Load libraries and data
 
 ```{r load_libraries}
-library(tidyverse)
-library(gt)
+library("tidyverse")
 library("table1")
-
+library("gt")
 ```
 
 ```{r load_data}
@@ -63,13 +62,13 @@ ckd_overview <- tribble(
   "ckd_stage", "Stage of CKD", "Categorical", "1–5 scale"
 )
 
-ckd_overview %>%
-  arrange(Type) %>% 
-  gt(groupname_col = "Type") %>%
+ckd_overview |>
+  arrange(Type) |> 
+  gt(groupname_col = "Type") |>
   tab_options(
     table.width = pct(100),
     row_group.as_column = TRUE
-  ) %>%
+  ) |>
   tab_header(
     title = "Chronic Kidney Disease Dataset: Variable Overview"
   )
@@ -102,7 +101,7 @@ The category with the most missing values is the classification of red blood cel
 
 ```{r get_rows}
 nrow(kidney_merged_GFR)
-nrow(kidney_merged_GFR %>% drop_na())
+nrow(kidney_merged_GFR |> drop_na())
 ```
 
 ## Table 1
@@ -146,15 +145,17 @@ Individuals in the dataset include people from 2 to 90 years old. Table1 shows t
 kidney_filter <- kidney_merged_GFR |>  
   drop_na(age_group) 
 
-ggplot(kidney_filter, aes(age_group, fill = classification)) +
+p<-ggplot(kidney_filter, aes(age_group, fill = classification)) +
   geom_bar(
     position = position_dodge(preserve = "single")) +
   theme_minimal() +
-  labs(title="Age distribution",
-  x = ("Age Group"),
-  y = ("Count"),
-  fill = "Classification") 
+  labs(title="Kidney disease distribution",
+       x = ("Age Group"),
+       y = ("Count"),
+       fill = "Classification"
+       )
 
+ggsave("../plots/04_ckd.png", plot = p, width = 6, height = 4)
 ```
 
 ## CKD stage distribution
@@ -164,7 +165,8 @@ We categorized CKD into stages based on the blood filtration efficiency. The plo
 As expected, we see that most of the individuals not diagnosed with CKD fall within the Normal to Mild category. On the contrary, among individuals with CKD, the majority of individuals belong to advanced stages of the disease, with GFR from 30 to 40, and over 60 people suffer from kidney failure.
 
 ```{r heatmap}
-
+#| fig-width: 8
+#| fig-height: 6
 stage_labs <- c("Normal", 
                 "Mild", 
                 "Mild to moderate", 
@@ -172,9 +174,9 @@ stage_labs <- c("Normal",
                 "Severe", 
                 "Failure")
 
-kidney_heatmap <- kidney_merged_GFR  %>% 
-  subset(!is.na(cdk_stage))  %>% 
-  group_by(cdk_stage, classification) %>% 
+kidney_heatmap <- kidney_merged_GFR |> 
+  subset(!is.na(cdk_stage)) |> 
+  group_by(cdk_stage, classification) |> 
   summarise(count = n(), .groups = "drop")
 
 p_ckd_stage<-ggplot(kidney_heatmap, aes(x = cdk_stage, y = classification, fill = count)) +
@@ -182,15 +184,15 @@ p_ckd_stage<-ggplot(kidney_heatmap, aes(x = cdk_stage, y = classification, fill 
   geom_text(aes(label = count), color = "darkgrey") +
   scale_fill_gradient(low = "white", high = "orange") +
   theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1)) +
   labs(title = "CKD Stage Distribution",
-    x = NULL,
-    y = "Classification",
-    fill = "Count") +
+       x = NULL,
+       y = "Classification",
+       fill = "Count") +
   scale_x_discrete(labels = stage_labs)
 
 print(p_ckd_stage)
+
 
 
 ```
