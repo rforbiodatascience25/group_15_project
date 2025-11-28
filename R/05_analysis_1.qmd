@@ -19,6 +19,7 @@ library("PerformanceAnalytics")
 library("randomForest")
 library("tidyverse")
 library("caret")
+library("dplyr")
 ```
 
 ## Setting seed for reproducibility
@@ -44,6 +45,7 @@ kidney_augmented |>
          hemoglobin, packed_cell_volume, white_blood_cell_count, 
          red_blood_cell_count, GFR_male, GFR_female, GFR_average) |>
   chart.Correlation(histogram = TRUE, pch = 19)
+
 ```
 
 ## Random forest analysis
@@ -55,7 +57,8 @@ data <- kidney_augmented |>
   na.omit() |>
   select(-c(GFR_female, GFR_male, GFR_average, cdk_stage, specific_gravity))
 
-idx <- data$classification |>
+idx <- data |>
+  pull(classification) |>
   createDataPartition(p = 0.6, list = F)
 
 train <- data[idx,]
@@ -64,7 +67,9 @@ test <- data[-idx,]
 rf1 <- train |> 
   randomForest(classification ~ ., data = _, importance = T, ntree = 600)
 
-plot(rf1$err.rate[,1], type='l')
+rf1$err.rate[,1] |>
+  plot(type='l')
+
 ```
 
 ### Visualizing the confusion matrix
@@ -72,8 +77,13 @@ plot(rf1$err.rate[,1], type='l')
 This is used to see the model performance on the test set.
 
 ```{r}
-pred <- predict(rf1,test)
-confusionMatrix(pred,test$classification)
+truth <- test |>
+  pull(classification)
+pred  <- rf1 |>
+  predict(test)
+
+confusionMatrix(truth, pred)
+
 ```
 
 ### Variables importance plot
@@ -93,7 +103,8 @@ data <- kidney_augmented |>
   na.omit() |>
   select(-c(GFR_female, GFR_male, GFR_average, cdk_stage, specific_gravity))
 
-idx <- data$classification |>
+idx <- data |> 
+  pull(classification) |>
   createDataPartition(p = 0.6, list = F)
 
 train <- data[idx,]
@@ -106,7 +117,9 @@ rf2 <- train |>
                importance = T, 
                ntree = 600)
 
-plot(rf2$err.rate[,1], type='l')
+rf2$err.rate[,1] |>
+  plot(type='l')
+
 ```
 
 ### Visualizing the confusion matrix
@@ -114,8 +127,12 @@ plot(rf2$err.rate[,1], type='l')
 This is used to see the model performance on the test set.
 
 ```{r}
-pred <- predict(rf2,test)
-confusionMatrix(pred,test$classification)
+truth <- test |>
+  pull(classification)
+pred  <- rf2 |>
+  predict(test)
+
+confusionMatrix(truth, pred)
 ```
 
 ### Variables importance plot
