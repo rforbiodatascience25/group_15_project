@@ -1,0 +1,25 @@
+---
+title: "presentation"
+format: revealjs
+editor: visual
+---
+
+## Introduction (2)
+
+-   bio background
+
+## Materials and Methods (3)
+
+-   data origin
+
+-   libraries
+
+-   description (from augment. and desc.)
+
+## Results (3)
+
+-   plots with bigger picture within bio
+
+## Discussion (2)
+
+-   what could we do differently and how it would influence the results
