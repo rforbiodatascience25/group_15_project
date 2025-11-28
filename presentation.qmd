@@ -6,7 +6,13 @@ editor: visual
 
 ## Introduction (2)
 
--   bio background
+Chronic Kidney Disease (Failure)
+
+-   gradual loss of kidney function
+
+-   insufficient filtration -\> excess fluids from blood in urine
+
+-   the highest stage - dialysis or transplant
 
 ## Materials and Methods (3)
 
