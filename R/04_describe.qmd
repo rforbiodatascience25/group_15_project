@@ -146,8 +146,8 @@ kidney_filter <- kidney_merged_GFR |>
   drop_na(age_group) 
 
 p<-ggplot(kidney_filter, aes(age_group, fill = classification)) +
-  geom_bar(
-    position = position_dodge(preserve = "single")) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  scale_fill_manual(values = c("#FFB86C", "#8BE9FD")) +
   theme_minimal() +
   labs(title="Kidney disease distribution",
        x = ("Age Group"),
