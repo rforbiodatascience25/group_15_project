@@ -155,7 +155,8 @@ p<-ggplot(kidney_filter, aes(age_group, fill = classification)) +
        fill = "Classification"
        )
 
-ggsave("../plots/04_ckd.png", plot = p, width = 6, height = 4)
+ggsave("../plots/04_ckd.png", plot = p, width = 8, height = 4)
+
 ```
 
 ## CKD stage distribution
