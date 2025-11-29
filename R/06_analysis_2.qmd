@@ -10,151 +10,250 @@ execute:
   warning: false
 ---
 
-## Giosuè
-
-## Correlation plot
-
-The corr plot shows the correlation between all the numeric variables in the dataset, from there we can inspect if there is correlation between variables and how strong.
+## Loading libraries
 
 ```{r}
-library("PerformanceAnalytics")
-
-kidney_augmented <- read_rds("../data/03_data_augment.rds")
-
-kidney_augmented |>
-  select(age, blood_pressure, blood_glucose_random, blood_urea, serum_creatinine, sodium, potassium, hemoglobin, packed_cell_volume, white_blood_cell_count, red_blood_cell_count, GFR_male, GFR_female, GFR_average) |>
-  chart.Correlation(histogram = TRUE, pch = 19)
+library("tidyverse")
 ```
 
-## Random forest analysis
-
-Using random forest we are inspecting the variable importance, to further select our variables. This also includes factor variables.
+## Loading augmented data
 
 ```{r}
-library(randomForest)
-library(caret)
-
-set.seed(123)
-
-kidney_augmented <- read_rds("../data/03_data_augment.rds")
-
-data <- kidney_augmented |> 
-  na.omit() |>
-  select(-c(GFR_female, GFR_male, GFR_average, cdk_stage, specific_gravity))
-
-idx <- data$classification |>
-  createDataPartition(p = 0.6, list = F)
-
-train <- data[idx,]
-test <- data[-idx,]
-
-rf1 <- train |> 
-  randomForest(classification ~ ., data = _, importance = T, ntree = 600)
-
-plot(rf1$err.rate[,1], type='l')
+kidney_merged_GFR <- read_rds("../data/03_data_augment.rds")
 ```
 
-### Visualizing the confusion matrix
+## Prepare variables for Analysis
 
-This is used to see the model performance on the test set.
+Here we make sure that the key categorical variables are treated as factors and that the CKD stages have an ordered structure.
 
 ```{r}
-pred <- predict(rf1,test)
-confusionMatrix(pred,test$classification)
+kidney_analysis <- kidney_merged_GFR |>
+mutate(
+  classification = as.factor(classification),
+  hypertension = as.factor(hypertension),
+  diabetes_mellitus = as.factor(diabetes_mellitus),
+  coronary_artery_disease = as.factor(coronary_artery_disease),
+  anemia = as.factor(anemia),
+  pedal_edema = as.factor(pedal_edema),
+  cdk_stage = factor(
+    cdk_stage,
+    levels = c("stage_1", "stage_2", "stage_3a", "stage_3b", "stage_4", "stage_5"),
+    ordered = TRUE
+    )
+  )
 ```
 
-### Variables importance plot
+## Question 1: Is kidney function (GFR) lower in CKD patients?
 
-This plot is used to see how much each variable is influencing the accuracy of the model.
+We expect individuals with a CKD diagnosis to have lower estimated glomerular filtration rate (GFR).
 
 ```{r}
-varImpPlot(rf1)
+kidney_analysis |>
+  drop_na(GFR_average, classification) |>
+  group_by(classification) |>
+  summarise(
+    n = n(),
+    mean_GFR = mean(GFR_average),
+    median_GFR = median(GFR_average),
+    sd_GFR = sd(GFR_average)
+    )
+
 ```
 
-### Repeating random forest analysis with important variables
+Visualize GFR by CKD classification
 
 ```{r}
-kidney_augmented <- read_rds("../data/03_data_augment.rds")
+#| fig-width: 8
+#| fig-height: 5
 
-data <- kidney_augmented |> 
-  na.omit() |>
-  select(-c(GFR_female, GFR_male, GFR_average, cdk_stage, specific_gravity))
+kidney_analysis |>
+  drop_na(GFR_average, classification) |>
+  ggplot(aes(x = classification, y = GFR_average, fill = classification)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position="none") +
+  labs(
+    title = "Estimated GFR by CKD classification",
+    x = "Chronic kidney disease outcome",
+    y = "Estimated GFR (ml/min)") +
+  scale_x_discrete(
+    labels = c("ckd" = "Disease", "notckd" = "No Disease")) +
+  scale_fill_manual(
+    values = c("ckd" = "#C44536", "notckd" = "#6A994E"))
 
-idx <- data$classification |>
-  createDataPartition(p = 0.6, list = F)
-
-train <- data[idx,]
-test <- data[-idx,]
-
-rf2 <- train |> 
-  randomForest(classification ~ packed_cell_volume + hemoglobin +
-                 serum_creatinine + red_blood_cell_count + albumin + hypertension + diabetes_mellitus,
-               data = _, 
-               importance = T, 
-               ntree = 600)
-
-plot(rf2$err.rate[,1], type='l')
 ```
 
+## Question 2: How are CKD stages distributed between diagnosed and non-diagnosed individuals?
+
+Here we look at how the GFR-based CKD stages are distributed in people with and without a CKD diagnosis.
+
 ```{r}
-pred <- predict(rf2,test)
-confusionMatrix(pred,test$classification)
+kidney_analysis |>
+  drop_na(cdk_stage, classification) |>
+  count(cdk_stage, classification) |>
+  group_by(classification) |>
+  mutate(prop = n / sum(n))
+
 ```
 
 ```{r}
-varImpPlot(rf2)
+#| fig-width: 8
+#| fig-height: 5
+
+stage_labs <- c("Normal", 
+                "Mild", 
+                "Mild to moderate", 
+                "Moderate to severe",
+                "Severe", 
+                "Failure")
+
+kidney_analysis |>
+  drop_na(cdk_stage, classification) |>
+  ggplot(aes(x = cdk_stage, fill = classification)) +
+  geom_bar(position = "fill") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    title = "Distribution of GFR-based CKD stages by classification",
+    x = NULL,
+    y = "Proportion within classification group"
+    ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  scale_fill_manual(
+    values = c("ckd" = "#C44536", "notckd" = "#6A994E"),
+    labels = c("ckd" = "CKD diagnosis", "notckd" = "No CKD diagnosis")) +
+  scale_x_discrete(labels = stage_labs)
+
 ```
 
-## Joel
+## Question 3: Are hypertension and diabetes more common among CKD patients?
 
-## New code
+Hypertension and diabetes are known risk factors for CKD. Here we compare their prevalence between groups.
 
 ```{r}
-# 1) Pivot to long format for the key continuous predictors
-kidney_analysis2 <- kidney_analysis |>
-  select(classification,
-         albumin,
-         serum_creatinine,
-         hemoglobin,
-         packed_cell_volume,
-         red_blood_cell_count) |>
+kidney_analysis |>
+  drop_na(c(hypertension, classification)) |>
+  count(classification, hypertension) |>
+  group_by(classification) |>
+  mutate(prop = n / sum(n))
+
+```
+
+Visualization
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5
+
+kidney_analysis |>
+  drop_na(c(hypertension, classification)) |>
+  ggplot(aes(x = classification, fill = hypertension)) +
+  geom_bar(
+    position = position_dodge(preserve = "single")) +   
+  theme_minimal() +
+  labs(
+    title = "Hypertension by CKD classification",
+    fill = "Hypertension",
+    x = "Chronic kidney disease outcome",
+    y = "Number of people") +
+  scale_x_discrete(
+    labels = c("ckd" = "Disease", "notckd" = "No Disease")) +
+  scale_fill_manual(
+    values = c("yes" = "#C44536", "no" = "#6A994E"),
+    labels = c("yes" = "Diagnosed", "no" = "Not diagnosed"))
+
+```
+
+## Diabetes vs Classification
+
+```{r}
+kidney_analysis |>
+  drop_na(diabetes_mellitus, classification) |>
+  count(classification, diabetes_mellitus) |>
+  group_by(classification) |>
+  mutate(prop = n / sum(n))
+
+```
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5
+
+kidney_analysis |>
+  drop_na(diabetes_mellitus, classification) |>
+  ggplot(aes(x = classification, fill = diabetes_mellitus)) +
+  geom_bar(position = position_dodge(preserve = "single")) +
+  theme_minimal() +
+  labs(
+    title = "Diabetes mellitus by CKD classification",
+    fill = "Diabetes mellitus",
+    x = "Chronic kidney disease outcome",
+    y = "Number of people") +
+  scale_x_discrete(
+    labels = c("ckd" = "Disease", "notckd" = "No Disease")) +
+  scale_fill_manual(
+    values = c("yes" = "#C44536", "no" = "#6A994E"),
+    labels = c("yes" = "Diagnosed", "no" = "Not diagnosed"))
+
+```
+
+## Final Plot
+
+Setting the data to long format
+
+```{r}
+kidney_long <- kidney_analysis |>
+  select(
+    classification,
+    albumin,
+    serum_creatinine,
+    hemoglobin,
+    packed_cell_volume,
+    red_blood_cell_count) |>
   pivot_longer(
     cols = -classification,
     names_to = "variable",
-    values_to = "value"
-  ) |>
-  drop_na(value)   
+    values_to = "value") |>
+  drop_na(value)
 
-# 2) Get per-variable y-limits so we can place n above all boxplots
-ylims <- kidney_analysis2 |>
+```
+
+Adjusting for label positions
+
+```{r}
+label_pos <- kidney_long |>
   group_by(variable) |>
   summarise(
-    top = max(value, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  mutate(y_pos = top + (top * 0.15))   
+    y_pos = max(value, na.rm = TRUE) * 1.15,
+    .groups = "drop")
+```
 
-# 3) Compute n per variable *and* classification, then join y_pos
-n_labels <- kidney_analysis2 |>
-  group_by(variable, classification) |>
-  summarise(
-    n = n(),               
-    .groups = "drop"
-  ) |>
-  left_join(ylims, by = "variable")
+Count observations per group and join label positions
 
-# 4) Faceted boxplot with n labels for CKD and non-CKD in each facet
-ggplot(kidney_analysis2,
-       aes(x = classification, y = value, fill = classification)) +
+```{r}
+n_labels <- kidney_long |>
+  count(variable, classification, name = "n") |>
+  left_join(label_pos, by = "variable")
+
+```
+
+Final Plot visualization
+
+```{r}
+#| fig-width: 10
+#| fig-height: 4
+
+ggplot(
+  kidney_long,
+  aes(x = classification, y = value, fill = classification)) +
   geom_boxplot() +
   geom_text(
     data = n_labels,
-    aes(x = classification, y = y_pos, label = paste0("n = ", n)),
-    size = 3
-  ) +
+    aes(y = y_pos, label = paste0("n = ", n)), size = 3) +
   facet_wrap(
     ~ variable,
     scales = "free_y",
+    nrow = 1,
     labeller = as_labeller(
       c(
         albumin = "Albumin (score)",
@@ -162,18 +261,21 @@ ggplot(kidney_analysis2,
         packed_cell_volume = "PCV (%)",
         red_blood_cell_count = "RBC count (millions/mcL)",
         serum_creatinine = "Creatinine (mg/dL)"
+        )
       )
-    )
-  ) +
+    ) +
   theme_minimal() +
   labs(
     title = "Key continuous predictors by CKD classification",
-    x = "Classification",
-    y = "Value"
-  ) +
+    fill = "Classification:",
+    x = "",
+    y = "") +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    legend.position = "bottom") +
   scale_fill_manual(
-    values = c("ckd" = "#EE3B3B", "notckd" = "#1b9e77"),
-    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed")
-  )
+    values = c("ckd" = "#C44536", "notckd" = "#6A994E"),
+    labels = c("ckd" = "Diagnosed", "notckd" = "Not diagnosed"))
 
 ```
