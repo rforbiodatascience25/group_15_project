@@ -10,11 +10,61 @@ execute:
   warning: false
 ---
 
-## Install dependencies
+## Install dependencies if missing
 
 ```{r}
-install.packages("PerformanceAnalytics")
-install.packages("randomForest")
-install.packages("caret")
-install.packages("tidyverse")
+packages <- c(
+  "PerformanceAnalytics",
+  "randomForest",
+  "tidyverse",
+  "quarto",
+  "caret",
+  "here",
+  "gt"
+  )
+
+for (pkg in packages) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+  }
+}
+```
+
+## Loading libraries
+
+```{r}
+library("quarto")
+library("here")
+```
+
+## Render to HTML
+
+Renders and moves to the results folder all the Quarto files
+
+```{r}
+#| output: false
+project_root <- here()
+results_dir <- here("results")
+if (!dir.exists(results_dir)) dir.create(results_dir)
+
+qmd_files <- c(
+  "01_load.qmd", "02_clean.qmd", "03_augment.qmd",
+  "04_describe.qmd", "05_analysis_1.qmd", "06_analysis_2.qmd"
+  )
+
+for (file in qmd_files) {
+  qmd_path <- here("R", file)
+  
+  quarto_render(input = qmd_path)
+  
+  html_source <- here("R", sub("\\.qmd$", ".html", file))
+  html_dest <- here("results", sub("\\.qmd$", ".html", file))
+  
+  if (file.exists(html_source)) {
+    file.rename(from = html_source, to = html_dest)
+    message("Moved: ", basename(html_dest))
+  } else {
+    warning("File not found: ", html_source)
+  }
+}
 ```
