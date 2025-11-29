@@ -20,10 +20,10 @@ execute:
 
 -   Create age groups
 
-## Create age groups
+## Loading libraries
 
 ```{r load_packages}
-library(tidyverse)
+library("tidyverse")
 ```
 
 ## Loading clean data
@@ -31,6 +31,8 @@ library(tidyverse)
 ```{r}
 kidney_clean <- read_rds("../data/02_data_clean.rds")
 ```
+
+## Data augmentation
 
 Here, we modify the cleaned dataset to prepare it for analysis. As a first step, we simply categorize the ages into age groups by intervals of 10, and re-order the data such that the new `age_group` column is after `age` for improved structure.
 
@@ -66,8 +68,7 @@ diagnoses = c("hypertension",
               "classification")
 
 kidney_diagnoses <- kidney_augmented |> 
-  select(id,
-         diagnoses)
+  select(c(id, diagnoses))
 
 kidney_vitals <- kidney_augmented |> 
   select(!diagnoses)
@@ -147,12 +148,13 @@ With the average GFR, we can group individuals into the chronic kidney disease s
 kidney_merged_GFR <- kidney_merged_GFR |> 
   mutate(
     cdk_stage = case_when(
-      GFR_average > 90 ~ "stage_1",
+      GFR_average > 90                     ~ "stage_1",
       GFR_average < 90 & GFR_average >= 60 ~ "stage_2",
       GFR_average < 60 & GFR_average >= 45 ~ "stage_3a",
       GFR_average < 45 & GFR_average >= 30 ~ "stage_3b",
       GFR_average < 30 & GFR_average >= 15 ~ "stage_4",
-      GFR_average < 15 ~ "stage_5")
+      GFR_average < 15                     ~ "stage_5"
+      )
   )
 ```
 
