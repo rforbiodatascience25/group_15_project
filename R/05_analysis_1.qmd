@@ -92,6 +92,10 @@ This plot is used to see how much each variable is influencing the accuracy of t
 
 ```{r}
 varImpPlot(rf1)
+
+ggsave(
+    filename = "../results/05_rf1_accuracy.png"
+  )
 ```
 
 ### Repeating random forest analysis with only important variables
@@ -141,4 +145,8 @@ This plot is used to see how much each variable is influencing the accuracy of t
 
 ```{r}
 varImpPlot(rf2)
+
+ggsave(
+    filename = "../results/05_rf2_accuracy.png"
+  )
 ```

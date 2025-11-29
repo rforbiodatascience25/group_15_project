@@ -154,6 +154,10 @@ ggplot(kidney_filter, aes(age_group, fill = classification)) +
        y = ("Count"),
        fill = "Classification"
        )
+
+ggsave(
+    filename = "../results/04_kidney_disease_dist.png"
+  )
 ```
 
 ## CDK stage distribution
@@ -188,4 +192,8 @@ ggplot(kidney_heatmap, aes(x = cdk_stage, y = classification, fill = count)) +
        y = "Classification",
        fill = "Count") +
   scale_x_discrete(labels = stage_labs)
+
+ggsave(
+    filename = "../results/04_CKD_stage_dist.png"
+  )
 ```
