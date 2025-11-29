@@ -94,7 +94,8 @@ Hypertension and diabetes was only present in those with a CKD diagnosis.
 ### Results - Key predictors of CKD diagnosis
 
 ![](images/06_key_predictors.png)
-—
+
+---
 
 ### Discussion
 
