@@ -156,7 +156,7 @@ ggplot(kidney_filter, aes(age_group, fill = classification)) +
        )
 
 ggsave(
-    filename = "../results/04_kidney_disease_dist.png"
+    filename = "../results/04_age_dist.png"
   )
 ```
 

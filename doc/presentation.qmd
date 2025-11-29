@@ -1,58 +1,139 @@
 ---
-title: "Chronic Kidney Disease - Data Analysis" 
+title: "Chronic Kidney Disease" 
 subtitle: "22160 - R for Bio Data Science" 
 author:   
   - "Group 15" 
-format:  
+format:
   revealjs:     
-    theme: dark  
+    embed-resources: true
 editor: visual 
 ---
 
-## Introduction (2)
+### Introduction
 
-Chronic Kidney Disease (or Kidney Failure)
+The dataset contains 25 features related to chronic kidney disease, collected from 400 individuals in India. In addition to **chronic kidney disease (CKD)**, there is information on co-diagnoses:
 
--   gradual loss of kidney function
+-   Hypertension
 
--   insufficient filtration -\> excess fluids from blood in urine
+-   Diabetes
 
-the highest stage - dialysis or transplant
+-   Anemia
 
-## Data Origin
+-   Dedal edema
 
--   Indian hospital collected over 2 months period
+-   Coronary artery disease
 
--   24 features, 400 Instances
+---
 
-## Materials and Methods (3)
+### Analysis goal
 
--   libraries,cleaning?
+Can we identify any physiological markers which are related to a chronic kidney disease diagnosis? If so, which ones?
 
-## Variables
+---
 
-description (from augment. and desc.)
+### Methods
 
-Features:
+Data cleaning and augmentation was done using the **Tidyverse** collection of packages.
 
--   categorical/binary/integer/continuous
+-   Cleaning: Renaming columns and fixing variable types.
 
--   Classification - Diagnosed / Not Diagnosed
+-   Augmenting: Divide into age groups, split and join, estimate globular filtration rate (GFR)
 
-include a graph with population distribution
+We conducted a **correlation analysis** and **random forest prediction** of which biomarkers best predict a CKD diagnosis. For this, we utilized the PerformanceAnalytics and randomForest packages.
 
-```{r}
-knitr::include_graphics("plots/04_ckd.png")
-```
+---
 
-## CKD and GFR
+### Results - Kidney disease stages
 
--   plots and introduce new variables/categories we created
+Using the equation below, we could estimate GFR and the different stages of CKD people were in. Due to lack of sex data, we estimated an average of male and female GFR values.<small> $$
+\text{eGFR}_{\text{cr}} = 142 \times \min\left(\frac{\text{Scr}}{\kappa},\, 1\right)^{\alpha}\times \max\left(\frac{\text{Scr}}{\kappa},\, 1\right)^{-1.200}\times 0.9938^{\text{Age}}\times 1.012 \;\; \text{[if female]}
+$$ </small>
 
-## Results (3)
+::::: columns
+::: column
+![](images/06_CKD_dist.png)
+:::
 
--   plots with bigger picture within bio
+::: column
+![](images/06_gfr_by_ckd.png)
+:::
+:::::
 
-## Discussion (2)
+---
 
--   what could we do differently and how it would influence the results
+### Results - random forest prediction of correlation
+
+::::: columns
+::: column
+![](images/05_rf1_accuracy.png)
+:::
+
+::: column
+![](images/05_rf2_accuracy.png)
+:::
+:::::
+
+---
+
+### Results - CKD and secondary diagnoses
+
+Hypertension and diabetes was only present in those with a CKD diagnosis.
+
+::::: columns
+::: column
+![](images/06_CKD_diabetes.png)
+:::
+
+::: column
+![](images/06_CKD_hypertension.png)
+:::
+:::::
+
+---
+
+### Results - Key predictors of CKD diagnosis
+
+![](images/06_key_predictors.png)
+—
+
+### Discussion
+
+Findings:
+
+-   RF accurately predicted explanatory variables for CKD.
+
+<!-- -->
+
+-   CKD is best predicted by **albumin** in urine, **hemoglobin concentration**, **PCV**, **RBC count**, and **creatinine** **levels.**
+
+-   GFR estimate aligns with CKD diagnosis.
+
+-   Hypertension and diabetes is more common in those with CKD
+
+-   In this data, many patients had severe CKD
+
+---
+
+### Discussion
+
+Caveats and possible improvements:
+
+-   Data did not need extensive cleaning.
+
+-   GFR estimate done without information on sex, meaning decreased accuracy.
+
+-   More information on the data source needed for more accurate conclusions.
+
+    -   E.g. Was the data collected in a hospital, including those without CKD
+
+---
+
+### References
+
+Data source
+
+Information/theory sources
+
+Packages
+
+---
