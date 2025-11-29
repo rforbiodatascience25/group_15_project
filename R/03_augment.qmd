@@ -105,7 +105,7 @@ With the data, we can estimate the [glomerular filtration rate (GFR)](https://ww
 
 -   **Stage 5, failure**: \<15 ml per minute
 
-Estimation of GFR is achieved by the [CDK-EPI equation](#0):
+Estimation of GFR is achieved by the [CDK-EPI equation](https://www.kidney.org/ckd-epi-creatinine-equation-2021):
 
 $$
 \text{eGFR}_{\text{cr}} = 142 \times \min\left(\frac{\text{Scr}}{\kappa},\, 1\right)^{\alpha}\times \max\left(\frac{\text{Scr}}{\kappa},\, 1\right)^{-1.200}\times 0.9938^{\text{Age}}\times 1.012 \;\; \text{[if female]}

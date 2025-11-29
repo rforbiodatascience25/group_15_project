@@ -129,12 +129,26 @@ Caveats and possible improvements:
 
 ------------------------------------------------------------------------
 
-### References
+### References <small>
 
-Data source
+**Data**:
 
-Information/theory sources
+Chronic KIdney Disease dataset. Kaggel.com. Available: <https://www.kaggle.com/datasets/mansoordaku/ckdisease/data>
 
-Packages
+**Packages**:
+
+Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L.D., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., et al. (2019). Welcome to the Tidyverse. Journal of Open Source Software *4*, 1686. <https://doi.org/10.21105/joss.01686>.
+
+Peterson, B.G., Carl, P., Boudt, K., Bennett, R., Ulrich, J., Zivot, E., Cornilly, D., Hung, E., Lestel, M., Balkissoon, K., et al. (2024). PerformanceAnalytics: Econometric Tools for Performance and Risk Analysis.
+
+A.C. (Fortran, port), A.L. (R, and port), M.W. (R (2024). randomForest: Breiman and Cutlers Random Forests for Classification and Regression.
+
+**Miscellaneous**:
+
+CKD-EPI Creatinine Equation (2021) \| National Kidney Foundation.
+
+Kaufman, D.P., Basit, H., and Knohl, S.J. (2025). Physiology, Glomerular Filtration Rate. In StatPearls, (Treasure Island (FL): StatPearls Publishing), p.
+
+</small>
 
 ------------------------------------------------------------------------
