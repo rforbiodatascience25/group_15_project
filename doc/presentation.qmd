@@ -23,13 +23,13 @@ The dataset contains 25 features related to chronic kidney disease, collected fr
 
 -   Coronary artery disease
 
----
+------------------------------------------------------------------------
 
 ### Analysis goal
 
 Can we identify any physiological markers which are related to a chronic kidney disease diagnosis? If so, which ones?
 
----
+------------------------------------------------------------------------
 
 ### Methods
 
@@ -41,7 +41,7 @@ Data cleaning and augmentation was done using the **Tidyverse** collection of pa
 
 We conducted a **correlation analysis** and **random forest prediction** of which biomarkers best predict a CKD diagnosis. For this, we utilized the PerformanceAnalytics and randomForest packages.
 
----
+------------------------------------------------------------------------
 
 ### Results - Kidney disease stages
 
@@ -59,21 +59,21 @@ $$ </small>
 :::
 :::::
 
----
+------------------------------------------------------------------------
 
-### Results - random forest prediction of correlation
+### Results - random forest variables importance
 
 ::::: columns
 ::: column
-![](images/05_rf1_accuracy.png)
+![](images/05_rf1_varImp.png)
 :::
 
 ::: column
-![](images/05_rf2_accuracy.png)
+![](images/05_rf2_varImp.png)
 :::
 :::::
 
----
+------------------------------------------------------------------------
 
 ### Results - CKD and secondary diagnoses
 
@@ -89,13 +89,13 @@ Hypertension and diabetes was only present in those with a CKD diagnosis.
 :::
 :::::
 
----
+------------------------------------------------------------------------
 
 ### Results - Key predictors of CKD diagnosis
 
 ![](images/06_key_predictors.png)
 
----
+------------------------------------------------------------------------
 
 ### Discussion
 
@@ -113,7 +113,7 @@ Findings:
 
 -   In this data, many patients had severe CKD
 
----
+------------------------------------------------------------------------
 
 ### Discussion
 
@@ -127,7 +127,7 @@ Caveats and possible improvements:
 
     -   E.g. Was the data collected in a hospital, including those without CKD
 
----
+------------------------------------------------------------------------
 
 ### References
 
@@ -137,4 +137,4 @@ Information/theory sources
 
 Packages
 
----
+------------------------------------------------------------------------
