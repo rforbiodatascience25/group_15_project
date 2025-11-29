@@ -88,12 +88,12 @@ The percentage of NAs in each column is summarized here:
 
 ```{r calculate_NAs}
 
-nas <- kidney_merged_GFR %>%  
+nas <- kidney_merged_GFR |> 
      summarise(across(everything(), ~mean(is.na(.)) * 100))
 
-nas %>%  
-  select(-red_blood_cells) %>% 
-  unlist() %>%  
+nas |> 
+  select(-red_blood_cells) |> 
+  unlist() |> 
   mean() 
 ```
 
@@ -145,25 +145,22 @@ Individuals in the dataset include people from 2 to 90 years old. Table1 shows t
 kidney_filter <- kidney_merged_GFR |>  
   drop_na(age_group) 
 
-p<-ggplot(kidney_filter, aes(age_group, fill = classification)) +
-  geom_bar(position = position_dodge(preserve = "single")) +
-  scale_fill_manual(values = c("#FFB86C", "#8BE9FD")) +
+ggplot(kidney_filter, aes(age_group, fill = classification)) +
+  geom_bar(
+    position = position_dodge(preserve = "single")) +
   theme_minimal() +
   labs(title="Kidney disease distribution",
        x = ("Age Group"),
        y = ("Count"),
        fill = "Classification"
        )
-
-ggsave("../plots/04_ckd.png", plot = p, width = 8, height = 4)
-
 ```
 
-## CKD stage distribution
+## CDK stage distribution
 
 We categorized CKD into stages based on the blood filtration efficiency. The plot above shows how many individuals are in which stage - Normal, Mild, Mild to Moderate, Moderate to Severe, Severe or Failure - the last one often requiring dialysis or transplant.
 
-As expected, we see that most of the individuals not diagnosed with CKD fall within the Normal to Mild category. On the contrary, among individuals with CKD, the majority of individuals belong to advanced stages of the disease, with GFR from 30 to 40, and over 60 people suffer from kidney failure.
+As expected, we see that most of the individuals not diagnosed with CDK fall within the Normal to Mild category. On the contrary, among individuals with CDK, the majority of individuals belong to advanced stages of the disease, with GFR from 30 to 40, and over 60 people suffer from kidney failure.
 
 ```{r heatmap}
 #| fig-width: 8
@@ -180,7 +177,7 @@ kidney_heatmap <- kidney_merged_GFR |>
   group_by(cdk_stage, classification) |> 
   summarise(count = n(), .groups = "drop")
 
-p_ckd_stage<-ggplot(kidney_heatmap, aes(x = cdk_stage, y = classification, fill = count)) +
+ggplot(kidney_heatmap, aes(x = cdk_stage, y = classification, fill = count)) +
   geom_tile(color = "white") +  
   geom_text(aes(label = count), color = "darkgrey") +
   scale_fill_gradient(low = "white", high = "orange") +
@@ -191,9 +188,4 @@ p_ckd_stage<-ggplot(kidney_heatmap, aes(x = cdk_stage, y = classification, fill 
        y = "Classification",
        fill = "Count") +
   scale_x_discrete(labels = stage_labs)
-
-print(p_ckd_stage)
-
-
-
 ```
