@@ -5,6 +5,7 @@ author:
   - "Group 15" 
 format:
   revealjs:     
+    theme: beige
     embed-resources: true
 editor: visual 
 ---
@@ -88,6 +89,35 @@ Hypertension and diabetes was only present in those with a CKD diagnosis.
 ![](images/06_CKD_hypertension.png)
 :::
 :::::
+
+------------------------------------------------------------------------
+
+### Results - diabetes hypertension analysis
+
+```{r}
+#| echo: false
+
+library("DescTools")
+library("tidyverse")
+data <- read_rds("../data/04_data_analysis.rds")
+
+```
+
+```{r}
+#| echo: true
+tab <- data |>
+  xtabs(~ hypertension + diabetes_mellitus, data = _)
+
+tab
+tab |>
+  chisq.test()
+
+V <- CramerV(tab) |>
+  round(3)
+
+sprintf("Cramér's V = %.3f", V)
+
+```
 
 ------------------------------------------------------------------------
 

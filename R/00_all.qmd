@@ -17,6 +17,7 @@ packages <- c(
   "PerformanceAnalytics",
   "randomForest",
   "tidyverse",
+  "DescTools",
   "quarto",
   "caret",
   "here",

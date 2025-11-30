@@ -14,6 +14,7 @@ execute:
 
 ```{r}
 library("tidyverse")
+library("DescTools")
 ```
 
 ## Loading augmented data
@@ -41,6 +42,9 @@ mutate(
     ordered = TRUE
     )
   )
+
+kidney_analysis |>
+  write_rds("../data/04_data_analysis.rds")
 ```
 
 ## Question 1: Is kidney function (GFR) lower in CKD patients?
@@ -211,6 +215,27 @@ ggsave(
   )
 
 ```
+
+## Investigating hypertension and diabetes mellitus
+
+Here we investigate why the two variables seem equally discriminatory but one is labelled as non important by the random forest analysis.
+
+```{r}
+tab <- kidney_analysis |>
+  xtabs(~ hypertension + diabetes_mellitus, data = _)
+
+tab
+tab |>
+  chisq.test()
+
+V <- CramerV(tab) |>
+  round(3)
+
+sprintf("Cramér's V = %.3f", V)
+
+```
+
+It looks like the variables are strongly correlated and that could explain what is happening.
 
 ## Final Plot
 
