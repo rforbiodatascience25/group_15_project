@@ -2,7 +2,7 @@
 title: "Chronic Kidney Disease" 
 subtitle: "22160 - R for Bio Data Science" 
 author:   
-  - "Group 15" 
+  - "Group 15:"
 format:
   revealjs:     
     theme: beige
@@ -12,19 +12,9 @@ editor: visual
 
 ### Introduction
 
-The dataset contains 25 features related to chronic kidney disease, collected from 400 individuals in India. In addition to **chronic kidney disease (CKD)**, there is information on co-diagnoses:
+The dataset contains 25 features related to chronic kidney disease, collected from 400 individuals in India. In addition to **chronic kidney disease (CKD)**, there is information on co-diagnoses: **hypertension**, **diabetes**, **anemia**, **dedal** **edema**, **coronary artery disease**
 
--   Hypertension
-
--   Diabetes
-
--   Anemia
-
--   Dedal edema
-
--   Coronary artery disease
-
-------------------------------------------------------------------------
+<br>
 
 ### Analysis goal
 
@@ -131,17 +121,10 @@ sprintf("Cramér's V = %.3f", V)
 
 Findings:
 
--   RF accurately predicted explanatory variables for CKD.
-
-<!-- -->
-
--   CKD is best predicted by **albumin** in urine, **hemoglobin concentration**, **PCV**, **RBC count**, and **creatinine** **levels.**
-
+-   Random forest accurately predicted explanatory variables for CKD.
+-   CKD is well predicted by **albumin** in urine, **hemoglobin concentration**, **packed cell volume**, **red blood cells count**, and **creatinine** **levels.**
 -   GFR estimate aligns with CKD diagnosis.
-
 -   Hypertension and diabetes is more common in those with CKD
-
--   In this data, many patients had severe CKD
 
 ------------------------------------------------------------------------
 
@@ -149,13 +132,11 @@ Findings:
 
 Caveats and possible improvements:
 
--   Data did not need extensive cleaning.
+-   Small dataset
 
--   GFR estimate done without information on sex, meaning decreased accuracy.
+-   GFR estimate done without information on sex, meaning decreased accuracy
 
--   More information on the data source needed for more accurate conclusions.
-
-    -   E.g. Was the data collected in a hospital, including those without CKD
+-   More information on the data source needed for more accurate conclusions
 
 ------------------------------------------------------------------------
 
@@ -180,5 +161,3 @@ CKD-EPI Creatinine Equation (2021) \| National Kidney Foundation.
 Kaufman, D.P., Basit, H., and Knohl, S.J. (2025). Physiology, Glomerular Filtration Rate. In StatPearls, (Treasure Island (FL): StatPearls Publishing), p.
 
 </small>
-
-------------------------------------------------------------------------
