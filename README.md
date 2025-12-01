@@ -36,7 +36,7 @@ This is the final project for the course "R for bio data science" at DTU, autumn
 
 Link to presentation:
 
-<https://rawcdn.githack.com/rforbiodatascience25/group_15_project/910a53b4ae4bc24d0ac922841e04b0ce97ba4443/doc/presentation.html>
+<https://rawcdn.githack.com/rforbiodatascience25/group_15_project/c2f60f40390eef2d40e33c8482dcbbacb7c1a39f/doc/presentation.html>
 
 ## Data and aim
 
