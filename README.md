@@ -1,18 +1,38 @@
+# **Project Contributors:**
+
+-   Palliotto Giosuè
+
+    -   Student ID: s253716
+
+    -   GitHub: pi-cco
+
+-   Palova Zoja
+
+    -   Student ID: s225185
+
+    -   GitHub: zojpal
+
+-   Pålsson Joel Sebastian
+
+    -   Student ID: s253731
+
+    -   GitHub: palssonjoel
+
+-   Humaira Amin
+
+    -   Student ID: s235423
+
+    -   GitHub: HumairaFatimaAmin
+
+-   Anas Majed El-Youssef
+
+    -   Student ID: s233381
+
+    -   GitHub: Anasy98
+
 # Group 15: Chronic Kidney Disease project
 
 This is the final project for the course "R for bio data science" at DTU, autumn semester of 2025.
-
-**Members:**
-
--   Palliotto Giosuè (s253716)
-
--   Palova Zoja (s225185)
-
--   Pålsson Joel Sebastian (s253731)
-
--   Humaira Amin (s235423)
-
--   Anas Majed El-Youssef (s233381)
 
 ## Data and aim
 
