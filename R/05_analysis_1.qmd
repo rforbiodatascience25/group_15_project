@@ -93,7 +93,7 @@ This plot is used to see how much each variable is influencing the accuracy of t
 ```{r}
 varImpPlot(rf1)
 
-png("../results/05_rf1_varImp.png")
+png("../results/05_rf1_varImp.png", width = 800, height = 1200, type = "cairo")
 varImpPlot(rf1)
 dev.off()
 
@@ -147,7 +147,7 @@ This plot is used to see how much each variable is influencing the accuracy of t
 ```{r}
 varImpPlot(rf2)
 
-png("../results/05_rf2_varImp.png")
+png("../results/05_rf2_varImp.png", width = 800, height = 1200, type = "cairo")
 varImpPlot(rf2)
 dev.off()
 
