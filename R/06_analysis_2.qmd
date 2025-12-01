@@ -279,6 +279,8 @@ n_labels <- kidney_long |>
 
 Final Plot visualization
 
+The levels of key predictors - albumin, hemoglobin, cell volume, cell count of red blood, and creatinine are chosen for the final visualisation. RBC count and related packed cell volume are showing lower levels in individuals who are diagnosed with CKD. This is due to the kidneys not producing enough of hormone erythropoietin, responsible for signalling the creation of red blood cells in the bone marrow. This shortage can lead to anemia. This strongly correlates with hemoglobin levels and the expected result is shown in the plot - lower hemoglobin levels for diagnosed individuals. Creatinine levels, also used for GFR calculation, follow the opposite pattern. Creatinine, as a waste product from muscle and protein breakdown, is filtered by the kidneys. When their function is compromised, this product is found in the blood. As seen in the plot, healthy individuals show levels close to zero while elevated levels are recorded in diagnosed individuals. Lastly, albumin found in urine is an early indicator of kidney damage, as this essential protein should only stay in the blood. This is a clear indicator of a kidney filtration issue that can usually predict the progression of the disease. Non-diagnosed individuals show all scores 0, while diagnosed individuals range from 0 to 3.
+
 ```{r}
 #| fig-width: 10
 #| fig-height: 4
