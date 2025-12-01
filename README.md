@@ -34,6 +34,10 @@
 
 This is the final project for the course "R for bio data science" at DTU, autumn semester of 2025.
 
+Link to presentation:
+
+<https://rawcdn.githack.com/rforbiodatascience25/group_15_project/c2f60f40390eef2d40e33c8482dcbbacb7c1a39f/doc/presentation.html>
+
 ## Data and aim
 
 Information and link to the data can be found here: <https://www.kaggle.com/datasets/mansoordaku/ckdisease>
@@ -46,8 +50,7 @@ In this project, we aim to identify if any of these 25 physiological features ar
 
 ## How to run
 
-The rendered .qmd files can all be found as html documents in the results folder, as well as a selection of graphs from the analysis.
-To render the project yourself, do the following:
+The rendered .qmd files can all be found as html documents in the results folder, as well as a selection of graphs from the analysis. To render the project yourself, do the following:
 
 1.  Download the data from Kaggle (requires account), or from UV Irvine archive (no account needed) (links above)
 2.  Download and unzip the repository
