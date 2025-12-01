@@ -2,7 +2,7 @@
 title: "Chronic Kidney Disease" 
 subtitle: "22160 - R for Bio Data Science" 
 author:   
-  - "Group 15:"
+  - "Group 15"
 format:
   revealjs:     
     theme: beige
@@ -13,7 +13,7 @@ editor: visual
 
 ### Introduction
 
-The dataset contains 25 features related to chronic kidney disease, collected from 400 individuals in India. In addition to **chronic kidney disease (CKD)**, there is information on co-diagnoses: **hypertension**, **diabetes**, **anemia**, **dedal** **edema**, **coronary artery disease**
+The dataset contains 25 features related to chronic kidney disease, collected from 400 individuals in India. In addition to **chronic kidney disease (CKD)**, there is information on co-diagnoses: **hypertension**, **diabetes**, **anemia**, **pedal** **edema**, **coronary artery disease**
 
 <br>
 
