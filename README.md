@@ -55,7 +55,7 @@ The rendered .qmd files can all be found as html documents in the results folder
 1.  Download the data from Kaggle (requires account), or from UV Irvine archive (no account needed) (links above)
 2.  Download and unzip the repository
 3.  Unzip the data and save the data as `kidney_disease.csv` in a new folder called `_raw` in the repository
-4.  Render `00_all.qmd` file in the `R` folder
+4.  Run all `00_all.qmd` file in the `R` folder
 5.  The html files will be rendered into the `results` folder and data files saved in the `data` folder
 6.  To also see the presentation, render the `presentation.qmd` file in the `doc` folder
 
