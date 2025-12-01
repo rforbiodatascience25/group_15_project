@@ -150,5 +150,4 @@ varImpPlot(rf2)
 png("../results/05_rf2_varImp.png", width = 800, height = 1200, type = "cairo")
 varImpPlot(rf2)
 dev.off()
-
 ```
