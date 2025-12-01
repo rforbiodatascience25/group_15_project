@@ -91,8 +91,6 @@ confusionMatrix(truth, pred)
 This plot is used to see how much each variable is influencing the accuracy of the model.
 
 ```{r}
-varImpPlot(rf1)
-
 png("../results/05_rf1_varImp.png")
 varImpPlot(rf1)
 dev.off()
@@ -145,10 +143,7 @@ confusionMatrix(truth, pred)
 This plot is used to see how much each variable is influencing the accuracy of the model.
 
 ```{r}
-varImpPlot(rf2)
-
 png("../results/05_rf2_varImp.png")
 varImpPlot(rf2)
 dev.off()
-
 ```
